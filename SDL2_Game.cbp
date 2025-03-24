@@ -45,6 +45,10 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="source_code/main.cpp" />
+		<Unit filename="source_code/ui/act.cpp" />
+		<Unit filename="source_code/ui/act.h" />
+		<Unit filename="source_code/ui/co_che.cpp" />
+		<Unit filename="source_code/ui/co_che.h" />
 		<Unit filename="source_code/ui/loading.cpp" />
 		<Unit filename="source_code/ui/loading.h" />
 		<Unit filename="source_code/ui/menu.cpp" />
