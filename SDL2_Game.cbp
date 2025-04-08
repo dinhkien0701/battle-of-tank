@@ -17,14 +17,19 @@
 					<Add directory="../SDL2_image-2.8.8/x86_64-w64-mingw32/include" />
 					<Add directory="../SDL2_image-2.8.8/x86_64-w64-mingw32/include/SDL2" />
 					<Add directory="source_code/ui" />
+					<Add directory="../SDL2_ttf-2.24.0/x86_64-w64-mingw32/include" />
+					<Add directory="../SDL2-2.30.10/x86_64-w64-mingw32/include/SDL2" />
 				</Compiler>
 				<Linker>
 					<Add library="mingw32" />
 					<Add library="SDL2main" />
 					<Add library="SDL2" />
 					<Add library="SDL2_image" />
+					<Add library="SDL2_ttf" />
 					<Add directory="../SDL2-2.30.10/x86_64-w64-mingw32/lib" />
 					<Add directory="../SDL2_image-2.8.8/x86_64-w64-mingw32/lib" />
+					<Add directory="../SDL2_ttf-2.24.0/x86_64-w64-mingw32/lib" />
+					<Add directory="../SDL2-2.30.10/x86_64-w64-mingw32/lib/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -49,10 +54,12 @@
 		<Unit filename="source_code/ui/act.h" />
 		<Unit filename="source_code/ui/co_che.cpp" />
 		<Unit filename="source_code/ui/co_che.h" />
+		<Unit filename="source_code/ui/level_menu.cpp" />
 		<Unit filename="source_code/ui/loading.cpp" />
 		<Unit filename="source_code/ui/loading.h" />
 		<Unit filename="source_code/ui/menu.cpp" />
 		<Unit filename="source_code/ui/menu.h" />
+		<Unit filename="source_code/ui/play.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
