@@ -3,19 +3,11 @@
 
 #include<SDL2/SDL_ttf.h>
 
-void resetmp(int w, int h , pixelmp **mp);
 
 void new_obj_location(SDL_Rect &rect , int angle ,int step);
 
-std::pair<int,int> center_obj(const SDL_Rect &rect);
-
-int degree(std::pair<int,int> a, std::pair<int,int> b);
 
 void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse , bool & ban_dan);
-
-void render(SDL_Rect rect, int angle, SDL_Renderer* renderer,SDL_Surface *tempSurface) ;
-
-void act(SDL_Window *window , SDL_Renderer *renderer );
 
 
 struct typemap{
@@ -32,10 +24,18 @@ struct typemap{
 
  //SDL_Rect autoact(SDL_Renderer *renderer ,SDL_Rect &rest,SDL_Rect &mainrect,int upx,int upy , std::pair<SDL_Texture*, TextureInfo> *obj, pixelmp **mp);
 
-void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse_left , std::pair<int,int> &mouse_right , bool & ban_dan);
-
 void drawHUD(SDL_Renderer* renderer, TTF_Font* font, int level, int points, int highestPoint, int hearts);
-void lua_chon(SDL_Renderer *renderer , SDL_Surface *surface ,TextureInfo &player,int &upx , int &upy, pixelmp **mp );
-bool auto_act(SDL_Surface *surface , TextureInfo &main ,TextureInfo &enemy , pixelmp **mp);
+
+void bfs_area(int x_max,int y_max , SDL_Rect &rect , int bfs_map[45][25]);
+
+void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse_left , bool & ban_dan);
+
+bool kiem_tra_va_cham ( OBJ &obj , OBJ &player, OBJ *enemy_list , int &total_enemy , int bfs_map[45][25]);
+
+bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],int &total_enemy ,int & fps ,int &level);
+
+bool kiem_tra_duong_dan (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy ,OBJ *wall_list , int wall_map[45][25]);
+
+void lua_chon( OBJ &player , OBJ *enemy_list , int bfs_map[45][25],int &total_enemy, int fps , int &upx , int &upy);
 
 #endif // ACT_H

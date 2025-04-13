@@ -1,4 +1,7 @@
 #include <iostream>
+#include <queue>
+#include <iomanip>
+#include <cstring>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_Image.h>
 #include <SDL2/SDL_ttf.h>
@@ -17,175 +20,155 @@
 using namespace std;
 SDL_Surface *nen_surface = IMG_Load("C:/Users/maidi/Downloads/z6454705968533_fb6131d252bf4e6c8d54e5c856179c33.jpg");
     // Main
-SDL_Surface *xe = IMG_Load("C:/Users/maidi/Downloads/mann.png");
+SDL_Surface *nhan_vat = IMG_Load("C:/Users/maidi/Downloads/mann.png");
 
     //Đich
-SDL_Surface *than_dich = IMG_Load("C:/Users/maidi/Downloads/than_dich_chuan.png");
-SDL_Surface *sung_dich = IMG_Load("C:/Users/maidi/Downloads/than_sung_dich.png");
+SDL_Surface *enemy = IMG_Load("C:/Users/maidi/Downloads/enemy.png");
+
 
     //Tường thành
 
-SDL_Surface *tuong = IMG_Load("C:/Users/maidi/Downloads/z6455392080920_50cdaad3f6b5dc71701d80f8dbee46e5.png");
+SDL_Surface *wall = IMG_Load("C:/Users/maidi/Downloads/z6455392080920_50cdaad3f6b5dc71701d80f8dbee46e5.png");
 
-SDL_Surface *dan_surface = IMG_Load("C:/Users/maidi/Downloads/vien_dannnn.png");
+   //Đạn
+SDL_Surface *bullet = IMG_Load("C:/Users/maidi/Downloads/vien_dannnn.png");
 
-
-void khoi_tao_vien(const SDL_Rect &rect , const SDL_Rect &pre_rect ,const int &id ,const int &attribute,pixelmp **mp){
-    // xóa viền ở vị trí cũ
-    for(int i=0;i<pre_rect.w;i++){
-        mp[pre_rect.x+i][pre_rect.y].initialize(0,0);
-        mp[pre_rect.x+i][pre_rect.y+pre_rect.h-1].initialize(0,0);
-    }
-    for(int i=0;i<pre_rect.h;i++){
-        mp[pre_rect.x][pre_rect.y+i].initialize(0,0);
-        mp[pre_rect.x+pre_rect.w-1][pre_rect.y+i].initialize(0,0);
-    }
-    // vẽ viền ở vị trí mới
-    for(int i=0;i<rect.w;i++){
-        mp[rect.x+i][rect.y].initialize(id,attribute);
-        mp[rect.x+i][rect.y+rect.h-1].initialize(id,attribute);
-    }
-    for(int i=0;i<pre_rect.h;i++){
-        mp[pre_rect.x][pre_rect.y+i].initialize(id,attribute);
-        mp[pre_rect.x+pre_rect.w-1][pre_rect.y+i].initialize(id,attribute);
-    }
-
-}
-void xoa_khoi(TextureInfo &obb, SDL_Rect pre_rect ,pixelmp **mp){
-    for(int i = pre_rect.x -15 ; i<= pre_rect.x + pre_rect.w+15  ; i++ ){
-        for(int j = pre_rect.y-15; j<=pre_rect.y +pre_rect.h +15 ; j++){
-            if(i<0||i>1319||j<40||j>759)continue;
-            if(mp[i][j].alpha == obb.id){
-                mp[i][j].initialize(0,0);
-            }
+void wall_to_bfs ( OBJ &player , int wall_map[45][25], int bfs_map[45][25]){
+    for(int i=0;i<45;i++){
+        for(int j=0 ;j < 25 ;j++){
+            if(wall_map[i][j]>0)bfs_map[i][j]=-1;
+            else bfs_map[i][j]=0;
         }
     }
+    bfs_area( 31, 16, player.rect , bfs_map);
 }
-void print_enemy( SDL_Renderer *renderer ,TextureInfo &enemy , SDL_Rect pre_rect, pixelmp **mp){
-    // xóa khỏi vj trí cũ và đặt vị trí mới cho viền xe địch
-
-    mapping_dich(than_dich,enemy,mp); // điền lại vị trí mới vào bảng
-    SDL_Texture* texture_than = SDL_CreateTextureFromSurface(renderer,than_dich);
-    SDL_Texture* texture_sung = SDL_CreateTextureFromSurface(renderer,sung_dich);
-    SDL_Point center = { enemy.rect.w / 2, enemy.rect.h / 2 };
-    SDL_RenderCopyEx(renderer, texture_than, NULL, &enemy.rect, enemy.angle, &center, SDL_FLIP_NONE);
-    SDL_RenderCopyEx(renderer, texture_sung, NULL, &enemy.rect, enemy.angle_two, &center, SDL_FLIP_NONE);
-}
-void print_tuong(SDL_Renderer *renderer , TextureInfo &tuong_chan , pixelmp **mp){
-    SDL_Texture* texture_tuong = SDL_CreateTextureFromSurface(renderer,tuong);
-    SDL_RenderCopy(renderer,texture_tuong,NULL,&tuong_chan.rect);
-}
-void print_main( SDL_Renderer *renderer ,TextureInfo &player , SDL_Rect pre_rect, pixelmp **mp){
-    /* xóa khỏi vj trí cũ
-    xoa_khoi(player,pre_rect,mp); */
-
-    SDL_Texture* texture_main = SDL_CreateTextureFromSurface(renderer,xe);
-    SDL_Point center = { player.rect.w / 2,player.rect.h / 2 };
-    SDL_RenderCopyEx(renderer, texture_main, NULL, &player.rect, player.angle, &center, SDL_FLIP_NONE);
 
 
-}
 void run_game(SDL_Window *window , SDL_Renderer *renderer){
+    SDL_Texture* Background = SDL_CreateTextureFromSurface(renderer,nen_surface);
+    SDL_Texture* Nhan_vat = SDL_CreateTextureFromSurface(renderer,nhan_vat);
+    SDL_Texture* Enemy    = SDL_CreateTextureFromSurface(renderer,enemy);
+    SDL_Texture* Wall     = SDL_CreateTextureFromSurface(renderer,wall);
+    SDL_Texture* Bullet   = SDL_CreateTextureFromSurface(renderer,bullet);
+
     TTF_Font* font = TTF_OpenFont("C:/SDL2_ttf-2.24.0/OpenSans-Italic-VariableFont_wdth,wght.ttf", 24);
     int window_w , window_h;
     SDL_SetWindowSize(window,1320,760); // thay đổi kích thước của sổ
-
+    SDL_Rect background_rect = {0,0,1320,760};
     // Căn giữa cửa sổ cho phù hợp
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     SDL_GetWindowSize(window , &window_w, &window_h);
-    // Khởi tạo bitmap pixel trên màn hình
-    pixelmp **mp = new pixelmp*[window_w+300];
-    for(int i=0;i<=window_w;i++) mp[i]= new pixelmp[window_h+500];
+    // Khởi tạo map của bức tường
+    int wall_map[45][25];
+    memset(wall_map, 0, sizeof(wall_map));
+    int bfs_map[45][25];
+    memset(bfs_map, 0, sizeof(bfs_map));
 
-    // Khởi tạo giá trị co bitmap pixel
-    resetmp(window_w,window_h,mp);
-
-    int level =10;
+    int level =2;
     int point =0;
     int highestpoint=0;
-    int pre_dich = 5 ; // số địch trước khi cập nhật
-    TextureInfo *enemy_list = new TextureInfo[22];
-    TextureInfo *obj_list   = new TextureInfo[400];
-    TextureInfo player;
+    OBJ *enemy_list = new OBJ[22];
+    OBJ *wall_list  = new OBJ[400];
+    OBJ player;
     int so_luong_dich, so_vat_can ;
     bool ban_dan =false ;
-    int fps_ban_dan = 25 ;
+    int fps = 0 ;
     player.defense = 3; // người chơi ban đầu có 3 mạng
 
     while(player.defense>0){
 
         SDL_RenderClear(renderer); // làm sạch bút vẽ
 
+        SDL_RenderCopy(renderer,Background,NULL,&background_rect);
+
         // Khởi tạo hạt giống cho hàm rand để sinh ngẫu nhiên
         srand(std::time(0));
 
+       // khởi tạo map
+        map_khoi_dong( level , enemy_list , wall_list , player ,so_luong_dich , so_vat_can ,wall_map);
 
-        map_khoi_dong( level , enemy_list ,obj_list , player ,so_luong_dich , so_vat_can);
+        player.rect.x = 510; player.rect.y =290;
+        enemy_list[2].rect.x = 520 ; enemy_list[2].rect.y =246;
 
-        print_main(renderer,player,player.rect,mp);
-        for(int i=10;i<so_luong_dich;i++){
-            print_enemy(renderer,enemy_list[i],enemy_list[i].rect,mp);
+       // in hình nhân vật
+        player.print_obj(Nhan_vat,renderer);
+
+        // in hình địch
+        for(int i=2;i<so_luong_dich;i++){
+            enemy_list[i].print_obj(Enemy,renderer);
 
         }
+
+        // in hình vật cản ( tường )
         for (int i=20;i<so_vat_can;i++){
-            print_tuong(renderer, obj_list[i],mp);
 
-            //vẽ viền cho tường
-
-            khoi_tao_vien(obj_list[i].rect,obj_list[i].rect,i,3,mp);
+            //vẽ tường
+            wall_list[i].print_obj(Wall,renderer);
 
         }
 
-
+         wall_to_bfs(player,wall_map,bfs_map);
+         for(int i=1;i<=16;i++){
+            for(int j=0;j<=31;j++)cout<<setw(2)<<bfs_map[j][i]<<' ';
+            cout<<'\n';
+         }
 
         //cout<<player.rect.x<<" "<<player.rect.y<<" "<<player.rect.w<<" "<<player.rect.h;
         SDL_RenderPresent(renderer);
 
+        /*if(enemy_list[2].tiep_xuc(player)==false){
+            cout<<" aaaaaaaaaaaaaaaaa";
+        }*/
         SDL_Delay(3000);
+
 
         pair<int,int> mouse;
         int upx=0,upy=0;
-        int total_dich ;
-        list< TextureInfo > list_dan ;
-        TextureInfo vien_dan;
-        while(/*player.defense >0 && total_dich >0*/ true){
+        int total_dich = so_luong_dich - 2;
+        int pre_dich = total_dich ;
+        queue<OBJ> list_bullet;
+        OBJ vien_dan ;
+        while(player.defense >0 && total_dich >0){
             SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer,Background,NULL,&background_rect);
+
             drawHUD(renderer, font, level, point, highestpoint, player.defense);
 
+            fps++;
+            mouse =make_pair(-1,-1);
 
-           /* mouse =make_pair(-1,-1);
-            SDL_RenderClear(renderer);
             handleEvent(upx,upy,mouse , ban_dan);
 
             //thực hiện vẽ xe tăng sau điều khiển
-            lua_chon(renderer, xe , player , upx ,upy,mp);
-
+            lua_chon(player ,enemy_list , bfs_map, so_luong_dich, fps , upx ,upy);
+            player.print_obj(Nhan_vat,renderer);
             // nếu lựa chọn bắn đạn
 
-            if(ban_dan && fps_ban_dan >=20){
-                vien_dan.khoi_tao_dan(player,player.angle);
-                list_dan.push_front(vien_dan);
-                fps_ban_dan =0 ;
+            if(ban_dan && player.clock >= 15){
+                vien_dan.khoi_tao_dan(player);
+                list_bullet.push(vien_dan);
+                // bắn xong reset ;
+                player.clock =1;
                 ban_dan =false ;// bắn xong
             }
 
-            else fps_ban_dan ++ ;
-            */
+            else player.clock ++ ;
+
             total_dich =0;
-            for(int i= 10 ;i< so_luong_dich ; i++){
+            for(int i= 2 ;i< so_luong_dich ; i++){
                 if(enemy_list[i].id==0)continue ; // nếu xe tăng này đã bị hạ kiểm tra xe tiếp theo
 
                 total_dich++; // biến đếm số lượng xe tăng địch còn lại
 
-                SDL_Rect pre_rect = enemy_list[i].rect;// lưu vị trí hiện tại của xe tăng địch
 
-                if(auto_act(than_dich,player , enemy_list[i],mp)){
-                    vien_dan.khoi_tao_dan(enemy_list[i],enemy_list[i].angle_two);
-                    //list_dan.push_front(vien_dan);
+
+                if(Auto_ACT(enemy_list[i],player ,enemy_list,bfs_map,so_luong_dich ,fps,level)){
+                    vien_dan.khoi_tao_dan(enemy_list[i]);
+                    list_bullet.push(vien_dan);
                 }
                 //Vẽ xe tăng địch
-                print_enemy(renderer,enemy_list[i],pre_rect,mp);
+                enemy_list[i].print_obj(Enemy,renderer);
             }
 
             // cộng điểm cho người chơi
@@ -194,27 +177,36 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
 
 
             for (int i= 20 ;i< so_vat_can ;i++){
-                if(obj_list[i].id==0)continue ;
-                //vẽ vật cản
-                render(obj_list[i].rect,0,renderer,tuong);
+                if(wall_list[i].id==0)continue ;
+                if(wall_list[i].defense <=0){
+                    wall_list[i].id =0;
+                    wall_map[wall_list[i].rect.x/40][wall_list[i].rect.y/40]=0;
+                    continue;
+                }
+                wall_list[i].print_obj(Wall,renderer);
             }
-            /*for(auto it = list_dan.begin(); it != list_dan.end(); ) {
-                if(tuong_tac_dan(dan_surface, *it, obj_list, enemy_list, player, mp)) {
-                    it = list_dan.erase(it); // Gán iterator mới từ erase
-                }
-                else {
-                    render(it->rect, it->angle, renderer, dan_surface);
-                    ++it; // Chỉ tăng iterator khi không xóa
-                }
+            // cập nhật lại bản đồ
+            wall_to_bfs(player,wall_map,bfs_map);
 
+            // Đối với đạn
 
-            } */
+            /*for(int i =(int)list_bullet.size();i>0;i--){
+                vien_dan = list_bullet.front();
+                new_obj_location(vien_dan.rect,vien_dan.angle,4);
+                list_bullet.pop();
+                if(kiem_tra_duong_dan(vien_dan, player, enemy_list , so_luong_dich ,wall_list , wall_map)==false){
+                    list_bullet.push(vien_dan);
+                }
+                vien_dan.print_obj(Bullet,renderer);
+            }*/
              SDL_RenderPresent(renderer);
-             SDL_Delay(5);
+             if(fps == 30)fps =0; // hoàn thành một vòng chu trình
+             SDL_Delay(1000);
 
         }
 
-        // kết thúc màn hiện tại , lên level
+        // kết thúc màn hiện tại , lên level , tặng  số điểm   = level;
+        point += level;
         level++;
 
     }

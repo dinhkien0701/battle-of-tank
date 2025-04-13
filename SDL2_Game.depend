@@ -452,7 +452,7 @@
 	<SDL2/SDL.h>
 	<iostream>
 
-1744036705 source:c:\sdl2_game\source_code\main.cpp
+1744529532 source:c:\sdl2_game\source_code\main.cpp
 	<SDL2/SDL.h>
 	<SDL2/SDL_Image.h>
 	<SDL2/SDL_ttf.h>
@@ -489,7 +489,7 @@
 
 1741366451 c:\sdl2_game\source_code\ui\menu.h
 
-1744101761 source:c:\sdl2_game\source_code\ui\co_che.cpp
+1744551559 source:c:\sdl2_game\source_code\ui\co_che.cpp
 	<SDL2/SDL.h>
 	<SDL2/SDL_Image.h>
 	<cmath>
@@ -504,23 +504,25 @@
 	"co_che.h"
 	"act.h"
 
-1744101761 c:\sdl2_game\source_code\ui\co_che.h
+1744548959 c:\sdl2_game\source_code\ui\co_che.h
 	<cmath>
 	<iostream>
+	<ctime>
 
-1744101451 source:c:\sdl2_game\source_code\ui\act.cpp
+1744557422 source:c:\sdl2_game\source_code\ui\act.cpp
 	<iostream>
 	<cstdlib>
 	<cmath>
 	<algorithm>
 	<utility>
+	<queue>
 	<SDL2/SDL.h>
 	<SDL2/SDL_Image.h>
 	<SDL2/SDL_ttf.h>
 	"co_che.h"
 	"act.h"
 
-1744018784 c:\sdl2_game\source_code\ui\act.h
+1744528766 c:\sdl2_game\source_code\ui\act.h
 	<SDL2/SDL_ttf.h>
 
 1744018868 source:c:\sdl2_game\source_code\ui\level_menu.cpp
@@ -536,8 +538,11 @@
 	"co_che.h"
 	"act.h"
 
-1744101103 source:c:\sdl2_game\source_code\ui\play.cpp
+1744558712 source:c:\sdl2_game\source_code\ui\play.cpp
 	<iostream>
+	<queue>
+	<iomanip>
+	<cstring>
 	<SDL2/SDL.h>
 	<SDL2/SDL_Image.h>
 	<SDL2/SDL_ttf.h>

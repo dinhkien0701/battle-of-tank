@@ -2,95 +2,101 @@
 #define CO_CHE_H
 #include<cmath>
 #include<iostream>
+#include <ctime>
 //tiền khai báo
-class pixelmp{
-    public:
-        int alpha ;// Do trong suot
-        int attribute;// thuộc tính của đối tượng đang nắm giữ pixel
-        void initialize(int al ,int att){
-            alpha=al;
-            attribute=att;
-        }
-};
 
-struct TextureInfo{
-    int id ;//id của png được dùng hiện tại
-    int angle ; // góc của hướng hiện tại đơn vị (độ);
+struct OBJ{
+    int id ;// mã nhận dạng đối tượng
+    int angle ; // góc của hướng hiện tại của đối tượng ( độ );
     int attribute; // thuộc tính của đối tượng
+
     int defense ;// giáp của đối tượng
-    int damage ;
-    SDL_Rect rect;//
-    int adjec[4]; // băng ghi hành động trong một giây
-    int maxadjec[3];// số hành động mỗi loại tối đa trong một giây
-    int angle_two ;
-    void khoi_tao_dich(int ro_id , SDL_Rect rectt ){
-        id =ro_id;
-        attribute = 1; // 1 là địch
-        rect =rectt;
-        defense=1;
-        //angle = 45; angle_two = 45 ; // góc ban đầu thân , súng
 
-        for(int i=0;i<4;i++)adjec[i]=0;
-        maxadjec[0]=40; maxadjec[1]=8 ; maxadjec[2]=12 ; // đứng im - xoay - tiến lùi
+    int rand_shot; // tại khung hình thứ bao nhiêu trên 60 sẽ bắn đạn ;
 
-        maxadjec[3]= 0; // random để có bắn đạn hay không khi ở cự ly gần
+    int clock ;
 
+    SDL_Rect rect;// vị trí của đối tượng
+
+
+    void khoi_tao_nhan_vat (int ID ,int Defense , SDL_Rect Rect){
+        id = ID; // mã nhận dạng đối tượng
+        attribute = 2; // 2 là nhân vật
+        rect = Rect;
+        defense =Defense;
+        angle = 270 ;
+        clock = 15 ; // cơ bắn của nhân vật là tích đủ 15 fps / lần bắn
     }
-    void khoi_tao_nhan_vat (int ro_id ,int defens , SDL_Rect rectt){
-        id =ro_id;
-        attribute =2; // 2 là nhân vật
-        rect =rectt;
-        defense =defens;
-        //angle = angle_two = 90 ; // góc ban đầu thân , súng
-        adjec[0]=20 ; // tích đủ 20 fps ( 1/3 giây ) có thể bắn ( mỗi giây bắn tối đa 3 lần )
+    void khoi_tao_dich(int ID, SDL_Rect Rect){
+        id = ID;
+        attribute =1; // 1 là địch
+        rect = Rect ;
+        defense = 1;
+        angle =270;
+
+        // Khởi tạo hạt giống cho hàm rand để sinh ngẫu nhiên
+        srand(std::time(0));
+        rand_shot = rand()%30 ; // cơ chế bắn của địch là khoảng  0.5 -> 1s/ lượt bắn , khi ở lượt rand_shot / 60;
+        srand(std::time(0));
+        clock = rand()%20; // cơ chế luôn hướng
     }
-    void khoi_tao_tuong (int ro_id , SDL_Rect rectt){
+
+    void khoi_tao_tuong (int ID , SDL_Rect Rect){
         // khơi tạo chướng ngại vật ( tường )
-        id =ro_id; // mã vị trí trong mảng
+        id = ID; // mã nhận dạng đối tượng
         attribute = 3; // 0 là trướng ngại vật
-        rect =rectt;
-        defense=6;
+        rect = Rect ; // vị trí bức tường
+        defense = 6 ; // ban đâu bức tường có 6 giáp
+        angle = 0 ;
 
     }
-    void khoi_tao_dan ( TextureInfo &info , int Angle){
+    void khoi_tao_dan ( OBJ &obj ){
         // khởi tạo đạn
+        rect = obj.rect;
+        angle = obj.angle;
 
-        rect = info.rect; // đạn được tạo bởi đối tượng nào thì có vị trí gần đối tượng đó
-        rect.x += static_cast<int> (cos(3.0*Angle/180*3.1415));
-        rect.y += static_cast<int> (sin(3.0*Angle/180*3.1415));
-        angle  = Angle ;
-        damage = info.attribute;
+        attribute = obj.attribute ; // loại đạn tương đương loại đối tượng tạo ra viên đạn đó
     }
     void xoa_obj (){
+        // loại bỏ một đối tượng
         id =0;
     }
 
+    bool tiep_xuc( OBJ &obj){
+        // kiểm tra hai đối tượng có tiếp xúc không
+        // true : có tiếp xúc
+        // false : không tiếp xúc
+        SDL_Rect b_rect = obj.rect;
+        if(obj.id == 0){
+            //nếu đối tượng đã bị xóa
+            return false ;
+        }
+        if((rect.x<=b_rect.x&&rect.x+rect.w>b_rect.x)||(b_rect.x<=rect.x&&b_rect.x+b_rect.w>rect.x)){
+            if((rect.y<=b_rect.y&&rect.y+rect.h>b_rect.y)||(b_rect.y<=rect.y&&b_rect.y+b_rect.h>rect.y)){
+                return true ;
+            }
+        }
+        return false ;
+    }
+
+    void print_obj(SDL_Texture *texture , SDL_Renderer *renderer){
+        SDL_Point center = { rect.w / 2, rect.h / 2 };
+        SDL_RenderCopyEx(renderer, texture, NULL, &rect, angle, &center, SDL_FLIP_NONE);
+    }
+
 };
 
-void heart(int &cx, int &cy ,int x, int y, int w, int h);
 
-double to_radian(int angle);
 
-int to_degree(double angle);
 
-void xoay_vector(int &ansX, int &ansY ,int x, int y, int cx, int cy , int angle );
-
-void mapping(int &ansX, int &ansY , int cx, int cy , int px , int py , double scaleX, double scaleY);
-
-void layer(SDL_Surface *surface, TextureInfo &info, pixelmp **mp);
-
-void layer2(SDL_Renderer *renderer,SDL_Surface *surface, TextureInfo &info, pixelmp **mp);
 
 int distance(int &x1,int &y1,int &x2, int &y2);
 
-bool sol(SDL_Surface *surface, SDL_Rect &new_rect,int root_id,int angle , pixelmp **mp);
 
-void map_khoi_dong( int level , TextureInfo *make_enemy , TextureInfo *make_obj , TextureInfo &mainn , int &sum_enemy , int &sum_obj);
+void dfs_map(int i, int j , int map_of_level[45][25],int &total , int max_total);
+
+void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , int &sum_enemy , int &sum_wall,int wall_map[45][25]);
 
 void run_game(SDL_Window *window , SDL_Renderer *renderer);
-
-void mapping_dich( SDL_Surface*surface, TextureInfo & enemy, pixelmp **mp);
-
-bool tuong_tac_dan(SDL_Surface *surface, TextureInfo & info, TextureInfo *tuong ,TextureInfo *dich , TextureInfo &main , pixelmp **mp);
 
 #endif // CO_CHE_H

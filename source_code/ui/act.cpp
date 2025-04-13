@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
+#include <queue>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_Image.h>
 #include <SDL2/SDL_ttf.h>
@@ -12,41 +13,96 @@
 using namespace std;
 
 bool quit = true;//khi người dùng chưa ấn thoát
-SDL_Surface* rbga(int r, int g, int b, int a) {
-    // Tạo một surface 50x50 pixel với định dạng 32-bit RGBA
-    SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, 50, 50, 32, SDL_PIXELFORMAT_RGBA8888);
-    if (!surface) {
-        SDL_Log("SDL_CreateRGBSurfaceWithFormat Error: %s", SDL_GetError());
-        return nullptr;
+
+int find_path( SDL_Rect &rect , int bfs_map[45][25]){
+    int ans =0;
+    if(rect.x <0 || rect.x +rect.w > 1320 || rect.y <40 ||rect.y+rect.h >760){
+        // trường hợp ngoài viền , loại bỏ luôn
+        return 100000000;
     }
-
-    // Nếu bạn muốn sử dụng thứ tự (r, b, g, a) thì hãy truyền như vậy;
-    // Nếu theo thứ tự chuẩn (r, g, b, a), bạn thay đổi các đối số tương ứng.
-    Uint32 mappedColor = SDL_MapRGBA(surface->format, r, b, g, a);
-    SDL_FillRect(surface, NULL, mappedColor);
-
-    return surface;
+    vector<int> rect_Rows ={rect.x/40 , (rect.x+39)/40};
+    vector<int> rect_Cols ={rect.y/40 , (rect.y+39)/40};
+    for(int X :rect_Rows){
+        for(int Y :rect_Cols){
+            ans += abs(bfs_map[X][Y]);
+        }
+    }
+    return ans ;
 }
-void resetmp(int w, int h , pixelmp **mp){
-    for(int i=0;i<=w;i++){
-        for(int j=0;j<=h;j++){
-            mp[i][j].initialize(0,0);
+
+void bfs_area(int x_max, int y_max , SDL_Rect &rect , int bfs_map[45][25]){
+    queue<pair<int,int>> Q; // tìm đường đi giữa địch và nhân vật
+    queue<pair<int,int>> QQ ; // tìm khoảng cách giữa địch và nhân vật trường hợp sẽ phá tường
+    vector<int> rect_Rows ={rect.x/40 , (rect.x+39)/40};
+    vector<int> rect_Cols ={rect.y/40 , (rect.y+39)/40};
+    for(int X :rect_Rows){
+        for(int Y :rect_Cols){
+            bfs_map[X][Y]=1;
+            Q.push({X,Y});
+        }
+    }
+    int a[]={1,-1,0,0};
+    int b[]={0,0,1,-1};
+    while(Q.size()||QQ.size()){
+        if(Q.size()>0){
+            int x=Q.front().first;
+            int y=Q.front().second;
+            for(int i=0;i<4;i++){
+                int xx = x+a[i];
+                int yy = y+b[i];
+                if(0<=xx&&xx<33&&1<=yy&&yy<19){
+                    if(bfs_map[xx][yy]==0){
+                        bfs_map[xx][yy]=bfs_map[x][y]+1;
+                        Q.push({xx,yy});
+                    }
+                    else if(bfs_map[xx][yy]==-1){
+                        bfs_map[xx][yy]=-bfs_map[x][y]-3;
+                        QQ.push({xx,yy}); // với trường hợp dích tường cập nhật vào QQ ;
+                     }
+                 }
+            }
+            Q.pop();
+        }
+        else{
+            int x=QQ.front().first;
+            int y=QQ.front().second;
+            for(int i=0;i<4;i++){
+                int xx = x+a[i];
+                int yy = y+b[i];
+                if(0<=xx&&xx<33&&1<=yy&&yy<19){
+                    if(bfs_map[xx][yy]==0){
+                        bfs_map[xx][yy]=-bfs_map[x][y]+1;
+                        Q.push({xx,yy});
+                    }
+                    else if(bfs_map[xx][yy]==-1){
+                        bfs_map[xx][yy]=bfs_map[x][y]-1;
+                        QQ.push({xx,yy}); // với trường hợp dích tường cập nhật vào QQ ;
+                     }
+                 }
+            }
+            QQ.pop();
         }
     }
 }
+
+
+
+
 void new_obj_location(SDL_Rect &rect , int angle ,int step){
     // vị trí mới sau di chuyển
-    double radian = to_radian(angle);
-    rect.x += static_cast<int>(step*cos(radian));
-    rect.y += static_cast<int>(step*sin(radian));
+    if( angle==0)rect.x+=step;
+    else if(angle==90)rect.y+=step;
+    else if(angle==180)rect.x-=step;
+    else rect.y-=step;
 }
-std::pair<int,int> center_obj(const SDL_Rect &rect){
-    //Xác định tâm đối tượng
-    return {rect.x+ (int)(0.5*rect.w),rect.y+(int)(0.5*rect.h)};
+bool so_sanh( SDL_Rect a , SDL_Rect b){
+    if(a.x!=b.x)return false ;
+    if(a.y!=b.y)return false ;
+    if(a.w!=b.w)return false ;
+    if(a.h!=b.h)return false ;
+    return true;
 }
-int degree(std::pair<int,int> a, std::pair<int,int> b){
-    return static_cast<int>(atan(1.0*(b.first -a.first)/(b.second-a.second))/3.1415*180);
-}
+
 void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse_left , bool & ban_dan){
     SDL_Event event ;// đối tượng lưu các tương tác
     while(SDL_PollEvent(&event)!=0){
@@ -101,274 +157,234 @@ void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse_left , bool & ba
 
 // vd
 
-void render(SDL_Rect rect, int angle, SDL_Renderer* renderer ,SDL_Surface *tempSurface) {
 
-    // Chuyển surface thành texture
-    SDL_Texture* tempTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
-    if (!tempTexture) {
-        SDL_Log("SDL_CreateTextureFromSurface Error: %s", SDL_GetError());
-        return;
+
+bool kiem_tra_va_cham (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy , int bfs_map[45][25]){
+
+    int x = obj.rect.x;
+    int y = obj.rect.y;
+    int w = obj.rect.w;
+    int h = obj.rect.h;
+
+    if(x<0||x+w>1320||y<40||y+h >760){
+        return true;
     }
 
-    // Xác định tâm xoay (center) của hình chữ nhật
-    SDL_Point center = { rect.w / 2, rect.h / 2 };
+     w = (x+ w-1)/40 ; h = ( y+ h-1)/40 ;
+     x/=40; y/=40 ;
 
-    // Render texture với góc xoay được chỉ định
-    SDL_RenderCopyEx(renderer, tempTexture, NULL, &rect, angle, &center, SDL_FLIP_NONE);
+    if(bfs_map[x][y]<0||bfs_map[x][h]<0||bfs_map[w][y]<0||bfs_map[w][h]<0){
 
-    // Hủy texture sau khi sử dụng
-    SDL_DestroyTexture(tempTexture);
+        return true ;
+    }
+
+    if(obj.id!=player.id){
+        if(obj.tiep_xuc(player))return true;
+    }
+    for(int i= 2 ; i< total_enemy ;i++){
+       if(obj.id!=enemy_list[i].id && obj.tiep_xuc(enemy_list[i]))return true;
+    }
+    return false ;
 }
 
 
+bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],int &total_enemy ,int & fps ,int &level){
+    if(enemy.clock == 0){
+        srand(std::time(0));
+        enemy.angle = 90*(rand()%4);
+        enemy.clock = rand()%20 ;
+    }
+    enemy.clock++;
+    bool shot = false ; // có nên bắn đạn không
+    //Tạo bản sao của địch
+    OBJ enemy_test = enemy ;
+
+    // Lấy vecto hướng
+    int x = player.rect.x - enemy.rect.x;
+    int y = player.rect.y - enemy.rect.y;
 
 
-
-/*
-class pixelmp{
-    public:
-        int alpha ;// Do trong suot
-        double speed ;// Hệ số làm chậm của môi trường
-        int damage ;// Sat thuong tai pixel
-        int attribute;// thuộc tính của đối tượng đang nắm giữ pixel
-        void initialize(int al ,int sp, int dam,int att){
-            alpha=al;
-            speed=sp;
-            damage =dam;
-            attribute=att;
-        }
-};
-
-struct TextureInfo{
-    int root_id;// id gốc của đối tượng
-    int id;//id của png được dùng hiện tại
-    int scope;// phạm vi các khung ảnh của đối tượng
-    int angle; // góc của hướng hiện tại đơn vị (độ);
-    int speed ;// Tóc độ cơ bản của đối tượng
-    double scale ; // Tỉ lệ tốc độ hiện tại
-    int attribute; // thuộc tính của đối tượng
-    int damage; // sát thương đối tượng
-    int defense;// giáp của đối tượng
-    SDL_Rect rect// vị trí và kích thước của đối tượng
-
-};
-void heart(int &cx, int &cy ,int x, int y, int w, int h);
-double to_radian(int angle);
-int to_degree(double angle);
-void xoay_vector(int &ansX, int &ansY ,int x, int y, int cx, int cy , int angle );
-void mapping(int &ansX, int &ansY , int cx, int cy , int px , int py , double scaleX, double scaleY);
-void layer(bool ck ,SDL_Renderer *renderer, std::pair<SDL_Texture*, TextureInfo> *obj, pixelmp **mp);
-*/
-
-
-
-
-bool auto_act(SDL_Surface *surface , TextureInfo &main ,TextureInfo &enemy , pixelmp **mp){
-    bool ban_dan =false ; // có nên bắn đạn không
-
-    //Lấy tâm của enemy {x,y} và tâm main {cx,cy}
-    int x,y,cx,cy;
-
-    heart(x,y,enemy.rect.x,enemy.rect.y,enemy.rect.w,enemy.rect.h); // lấy tâm enemy;
-    heart(cx,cy,main.rect.x,main.rect.y,main.rect.w,main.rect.h); // lấy tâm main
-    /*cout<<x<<' '<<y<<' '<<cx<<' '<<cy<<'\n';
-    cx=cy =0; */
     // Tính khoảng cách từ địch đến nhân vật
-    int dist = distance(x,y,cx,cy);
-    cout<<dist<<' ';
-    SDL_Rect new_rect ; // biến tạo trước để xác định vị trí
+    int dist = distance(player.rect.x,player.rect.y,enemy.rect.x,enemy.rect.y);
 
-    if(dist <=200){
 
-        int degree = (static_cast<int>(180*atan2(1.0*(cy-y),1.0*(cx-x))/3.1415)+360)%360;
-        degree =(degree+360)%360; // chuẩn hóa về thang 360 độ
-        int rand_degree = 3 +rand()%1 ; // hướng của súng sẽ quy một số độ
-        if((180<degree-enemy.angle_two &&degree-enemy.angle_two<360)||(-180<degree-enemy.angle_two &&degree-enemy.angle_two <0)){
-            //Xác định hướng xoay tối ưu ;
-            enemy.angle_two =(enemy.angle_two - rand_degree +360)%360;
+    if((enemy.rand_shot == fps)){
+        if(level <3){
+            // Ở level thấp địch bắn ít đạn
+            srand(std::time(0));
+            shot = static_cast<bool>(rand()%2);
         }
-        else enemy.angle_two =(enemy.angle_two +rand_degree +360)%360;
+        else shot =true ;
+    }
 
-        //cout<< degree<<' ';
-        if(enemy.adjec[3]==1){
-            ban_dan=true;
-        }
-        else if(enemy.adjec[3]==2){
+    // tạo hạt nhân cho random
+    srand(std::time(0));
+    int choose = rand()%9 + min(1, level/6); // random lấy số để xác định có đuổi không (>7)
 
-            int do_xoay =10 ; // độ xoay tối đa khi kiểm tra
-            do_xoay =min(do_xoay,abs(degree-enemy.angle));
-            do_xoay =min(do_xoay,min(abs(enemy.angle+360- degree),(degree +360 -enemy.angle)));
-            int huong =1;
-            if((180<degree-enemy.angle &&degree-enemy.angle<360)||(-180<degree-enemy.angle &&degree-enemy.angle <0)){
-                huong =-1;
+    if(true/*dist <= 180 + min(level*10,70)||choose >7*/){
+         if((enemy.rand_shot == fps)||((enemy.rand_shot == (fps + 15)% 30 && level > 4))){
+            //bắn khoảng 2 lần /s
+            if(dist <= 180 +min(level*10,70) ){
+                shot = true ;
+                // kiểm tra lại dist để đảm bảo nó nằm trong bán kính cho phép
             }
-            for(int i=do_xoay ;i>0;i--){
-                new_rect =enemy.rect;
+         }
+         // tạo hạt nhân cho random
+         srand(std::time(0));
+         //tiếp tục lấy số lần nữa
+         choose = choose/7*7 + rand()%10 + min(4,level/3) + max(0 ,3-dist/50) ; // random lấy số để xác định có đuổi không (>7)
 
-                if(sol(surface,new_rect,enemy.id,(enemy.angle+ huong*i +360)%360,mp)){
-                    enemy.angle = (enemy.angle+ huong*i +360)%360;
-                    break;
+         if(/*choose > 7*/true){
+            int score_area = find_path(enemy.rect, bfs_map);
+            //cout<< player.rect.x<<' '<<player.rect.y<<' '<<enemy.rect.x<<' '<<enemy.rect.y<<' '<<enemy.angle<<'\n';
+            int angle = enemy.angle ;
+            SDL_Rect pick_rect = enemy.rect;
+            for(int i=0;i<4;i++){
+
+                if(max(abs(x),abs(y))<50 + min(20,level*3)){
+                    // khi địch ở gần
+                    //cout<<x<<' '<<y;
+                    if(x==0){
+                        cout<<"x"<<'\n';
+                        if(y>0)angle = 90;
+                        else angle = 270 ;
+                        break;
+                    }
+                    else if(y==0){
+                        //cout<<"y"<<'\n';
+                        if(x>0)angle = 0;
+                        else angle =  180;
+                        break;
+                    }
+                    else{
+
+                        if(abs(x)<=abs(y)){
+
+                            enemy_test = enemy;
+                            enemy_test.rect.x += 2*x/abs(x);
+                            if(kiem_tra_va_cham(enemy_test, player , enemy_list , total_enemy ,bfs_map)==false){
+                                pick_rect = enemy_test.rect;
+                                if(x>0)angle =0;
+                                else angle = 180;
+                                break;
+                            }
+                        }
+                        else {
+                            enemy_test = enemy ;
+                            enemy_test.rect.y += 2*y/abs(y);
+                            if(kiem_tra_va_cham(enemy_test, player , enemy_list , total_enemy ,bfs_map)==false){
+                                pick_rect = enemy_test.rect;
+                                if(y>0)angle =90;
+                                else angle = 270;
+                                break;
+                            }
+                        }
+                    }
+
                 }
-            }
-        }
-        else if(enemy.adjec[3]==4){
+                enemy_test = enemy;
+                new_obj_location(enemy_test.rect,(enemy.angle +i*90)%360,2);
+                int new_score_area = find_path(enemy_test.rect, bfs_map);
+                //cout<< enemy_test.rect.x <<' '<<enemy_test.rect.y<<' '<<find_path(enemy_test.rect, bfs_map);
+                if(new_score_area < score_area ||(new_score_area == score_area && so_sanh(pick_rect,enemy.rect))){
 
-            for(int i=6;i>0;i--){
-                new_rect =enemy.rect;
-                new_obj_location(new_rect,enemy.angle,i);
-                if(sol(surface,new_rect,enemy.id,enemy.angle,mp)){
-                    enemy.rect =new_rect;
-                    break;
+                    angle = (enemy.angle + i*90)%360;
+                    score_area = new_score_area ;
+                    if(kiem_tra_va_cham(enemy_test, player , enemy_list , total_enemy ,bfs_map)==false){
+                        pick_rect = enemy_test.rect;
+                        //cout<<" TRUE ";
+
+                    }
+
                 }
+
             }
-        }
-        enemy.adjec[3]=(enemy.adjec[3]+1)%5;
-        return ban_dan;
+            //cout<<'\n';
+            enemy.rect = pick_rect;
+            enemy.angle = angle ;
+            return shot ;
+         }
+
 
     }
-    if(/*enemy.adjec[0]+enemy.adjec[1]+enemy.adjec[2]==60*/ true){
-        cout<<"pp";
-        enemy.adjec[0]=enemy.adjec[1]=enemy.adjec[2]=0 ; // sau khi xong một chu kỳ thì reset
-
-        for(int i=1;i<=90;i++){
-            for(int j=15;j>0;j--){
-               new_rect =enemy.rect;
-               new_obj_location(new_rect,enemy.angle+ i,j);
-               if(sol(surface,new_rect,enemy.id,enemy.angle+i,mp)){
-                    enemy.rect =new_rect;
-                    enemy.angle  =(enemy.angle +i+360)%360;
-               }
-               new_rect =enemy.rect;
-               new_obj_location(new_rect,enemy.angle- i,j);
-               if(sol(surface,new_rect,enemy.id,enemy.angle-i,mp)){
-                    enemy.rect= new_rect;
-                    enemy.angle  =(enemy.angle -i+360)%360;
-               }
-
-
-            }
+    for(int i=0;i<=4;i++){
+        enemy_test.rect = enemy.rect;
+        enemy_test.angle = (enemy.angle + 90)%360 ;
+        new_obj_location(enemy_test.rect,enemy_test.angle,2);
+        if(kiem_tra_va_cham(enemy_test,player,enemy_list,total_enemy,bfs_map)==false){
+            enemy = enemy_test ;
+            enemy.clock =(enemy.clock +1)%90;
+            return shot;
         }
+    }
 
+    return shot ;
+}
+
+bool kiem_tra_duong_dan (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy ,OBJ *wall_list , int wall_map[45][25]){
+    bool ans = false ;
+    int x = obj.rect.x;
+    int y = obj.rect.y;
+    int w = obj.rect.w;
+    int h = obj.rect.h;
+
+    if(0<x||x+w>1320||y<40||y+h >760){
+        return true;
+    }
+    x/=40; y/=40 ; w = (x+ w-1)/40 ; h = ( y+ h-1)/40 ;
+
+    if(wall_map[x][y]>0){
+        int k = wall_map[x][y];
+        wall_list[k].defense -= obj.attribute ;
+    }
+    if(wall_map[x][h]>0){
+        int k = wall_map[x][h];
+        wall_list[k].defense -= obj.attribute ;
+    }
+    if(wall_map[w][y]>0){
+        int k = wall_map[w][y];
+        wall_list[k].defense -= obj.attribute ;
+    }
+    if(wall_map[w][h]>0){
+        int k = wall_map[w][h];
+        wall_list[k].defense -= obj.attribute ;
+    }
+    if((obj.attribute!=player.attribute) && obj.tiep_xuc(player) ){
+        player.defense -=1;
+        ans =true ;
+    }
+    for(int i= 2 ; i< total_enemy ;i++){
+        if((obj.attribute != enemy_list[i].attribute)&&(obj.tiep_xuc(enemy_list[i]))){
+            enemy_list[i].id =0;
+            ans =true;
+        }
+    }
+    return ans ;
+}
+
+
+void lua_chon( OBJ &player , OBJ *enemy_list , int bfs_map[45][25],int &total_enemy, int fps , int &upx , int &upy){
+    if(fps%5 >0){
+        // sau 5 fps thì chạy một lần ;
+        return ;
+    }
+    if(abs(upx)>= abs(upy)){
+        if(upx >0)player.angle = 0;
+        else if ( upx <0)player.angle =180;
     }
     else{
-        cout<<"ss";
-        int active =rand()%3;
-        while(enemy.maxadjec[active]==enemy.adjec[active]){
-            active =rand()%3;
-            }
-        enemy.adjec[active]++;
-
-        if(active ==1){
-            // lựa chọn xoay
-            for(int i=10;i>0;i++){
-                new_rect = enemy.rect;
-                if(sol(surface,new_rect,enemy.id,(enemy.angle+i +360)%360,mp)){
-                    enemy.angle =(enemy.angle+i +360)%360;
-                }
-                new_rect = enemy.rect;
-                if(sol(surface,new_rect,enemy.id,(enemy.angle-i +360)%360,mp)){
-                   enemy.angle =(enemy.angle-i +360)%360;
-                }
-            }
-        }
-        else{
-            // lựa chọn tiến lùi
-            for(int i=6;i>i;i--){
-                new_rect = enemy.rect;
-                new_obj_location(new_rect,enemy.angle,i);
-                if(sol(surface,new_rect,enemy.id,enemy.angle,mp)){
-                    enemy.rect =new_rect;
-                }
-                new_rect = enemy.rect;
-                new_obj_location(new_rect,enemy.angle,-i);
-                if(sol(surface,new_rect,enemy.id,enemy.angle,mp)){
-                    enemy.rect =new_rect;
-                }
-            }
-        }
-        enemy.angle_two =(enemy.angle_two + rand()%2 +360 - rand()%2)%360;
-
+        if(upy >0)player.angle = 270 ;
+        else if( upy <0)player.angle =  90 ;
     }
-
-    return ban_dan;
+    if(abs(upx)+abs(upy)>0){
+        OBJ player_test = player ;
+        new_obj_location(player_test.rect,player_test.angle,10);
+        if(kiem_tra_va_cham(player_test ,player_test, enemy_list , total_enemy , bfs_map)==false){
+            player = player_test;
+        }
+    }
+    upx = upy =0;
 }
-bool dan(SDL_Surface *surface , TextureInfo &dan ,pixelmp **mp){
-    bool trung_muc_tieu =false ; // liệu đạn có trúng mục tiêu không
-
-    new_obj_location(dan.rect,dan.angle,3);
-
-    Uint32 *pixels =(Uint32*)surface->pixels; // tạo con trỏ đến bảng màu của ảnh
-    int pitch = surface->pitch / sizeof(Uint32);  // Số pixel trên mỗi dòng (có padding)
-
-    int width = surface->w; //chiều rộng ảnh
-    int height = surface->h; // chiều cao ảnh
-
-    int cx,cy; // tâm của ảnh png
-    int px, py;// tâm của đối tượng trên khung hình
-    heart(cx,cy,0,0,width,height); // tinh cx,cy
-    heart(px,py,dan.rect.x,dan.rect.y,dan.rect.w,dan.rect.h); // tính px, py
-    int ansX, ansY ;// biến dể lưu điểm ảnh qua ánh xạ kép xoay_vector và mapping
-    Uint8 r,b,g,a ;// màu và độ trong
-   // Duyệt qua từng pixel trong ảnh png
-    for(int i=0;i<width;i++){
-        for(int j=0;j<height;j++){
-                Uint32 pixel = pixels[j*pitch+i]; // tính chỉ số của pixel ( mảng hai chiều của pixels được đưa vè một chiều )
-                SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a); // lấy thông tin pixel ảnh
-
-                // Ánh xạ ansX, ansY hai lần để có được vị trí hiện thị của điểm ảnh lên màn hình
-                xoay_vector(ansX,ansY,i,j,cx,cy,dan.angle);
-                mapping(ansX,ansY,cx,cy,px,py,1.0*dan.rect.w/width,1.0*dan.rect.h/height);
-                if(a>0&&(ansX<0||ansX>1319)&&(ansY<40||ansY>759))return false;
-                if(a>0&&mp[ansX][ansY].attribute&&dan.id!=mp[ansX][ansY].attribute){
-                    //Tồn tại tiếp xúc giữa vật thể với môi trường
-                    trung_muc_tieu = true;
-                }
-        }
-    }
-    return trung_muc_tieu ;
-}
-
-void lua_chon(SDL_Renderer *renderer , SDL_Surface *surface ,TextureInfo &player,int &upx , int &upy, pixelmp **mp ){
-    int new_angle = player.angle;
-    int new_angle_two = player.angle_two;
-    SDL_Rect rect = player.rect;
-    // xác định góc lựa chọn tăng hay giảm
-    if(upx > 0){
-        new_angle =(new_angle + 3 +360)%360 ;
-    }
-    else if(upx <0){
-        new_angle =(new_angle -3+ +360)%360;
-    }
-    //xác định tiến hay lùi
-    if(upy > 0)upy =3;
-    else if(upy <0)upy =-3;
-    new_obj_location(rect,new_angle,upy);
-
-    if(sol(surface,rect,player.id,new_angle,mp)){
-        // nếu vùng này đến được , xóa vị trí trước
-        for(int i = player.rect.x -10 ; i<= player.rect.x + player.rect.w+10  ; i++ ){
-            for(int j = player.rect.y-10; j<=player.rect.y +player.rect.h +10 ; j++){
-                if(i<0||i>1319||j<40||j>759)continue;
-                if(mp[i][j].alpha== player.id){
-                    mp[i][j].initialize(0,0);
-                }
-             }
-        }
-        // cập nhật vị trí mới
-        player.rect =rect;
-        player.angle =new_angle;
-        layer(surface , player , mp);
-        upx = upy = 0;
-
-    }
-    SDL_Point center = {rect.w / 2 , rect.h / 2};
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,surface);
-    SDL_RenderCopyEx(renderer,texture,NULL,&player.rect,player.angle,&center,SDL_FLIP_NONE);
-    SDL_DestroyTexture(texture);
-
-}
-
-
 // Hàm này vẽ khung HUD ở đầu màn hình với các thông tin: Level, Point, Highest point, Hearts.
 void drawHUD(SDL_Renderer* renderer, TTF_Font* font, int level, int points, int highestPoint, int hearts)
 {

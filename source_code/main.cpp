@@ -40,8 +40,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    /*loadingstart(window,renderer);
-    menustart(window,renderer); */
+    loadingstart(window,renderer);
+    menustart(window,renderer);
     run_game(window,renderer);
     SDL_DestroyWindow(window);
 
