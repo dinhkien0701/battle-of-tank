@@ -10,18 +10,6 @@ void new_obj_location(SDL_Rect &rect , int angle ,int step);
 void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse , bool & ban_dan);
 
 
-struct typemap{
-    //Loại bản đồ người chơi sẽ gặp
-    int id;
-    int scaleW;
-    int scaleH;
-    void initialize(int ID, int SCALE_W, int SCALE_H){
-        id=ID;
-        scaleH=SCALE_H;
-        scaleW=SCALE_W;
-    }
-};
-
  //SDL_Rect autoact(SDL_Renderer *renderer ,SDL_Rect &rest,SDL_Rect &mainrect,int upx,int upy , std::pair<SDL_Texture*, TextureInfo> *obj, pixelmp **mp);
 
 void drawHUD(SDL_Renderer* renderer, TTF_Font* font, int level, int points, int highestPoint, int hearts);

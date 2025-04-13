@@ -31,7 +31,7 @@ SDL_Surface *enemy = IMG_Load("C:/Users/maidi/Downloads/enemy.png");
 SDL_Surface *wall = IMG_Load("C:/Users/maidi/Downloads/z6455392080920_50cdaad3f6b5dc71701d80f8dbee46e5.png");
 
    //Đạn
-SDL_Surface *bullet = IMG_Load("C:/Users/maidi/Downloads/vien_dannnn.png");
+SDL_Surface *bullet = IMG_Load("C:/Users/maidi/Downloads/Untitled-removebg-preview.png");
 
 void wall_to_bfs ( OBJ &player , int wall_map[45][25], int bfs_map[45][25]){
     for(int i=0;i<45;i++){
@@ -65,10 +65,10 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
     int bfs_map[45][25];
     memset(bfs_map, 0, sizeof(bfs_map));
 
-    int level =2;
+    int level = 20;
     int point =0;
     int highestpoint=0;
-    OBJ *enemy_list = new OBJ[22];
+    OBJ *enemy_list = new OBJ[50];
     OBJ *wall_list  = new OBJ[400];
     OBJ player;
     int so_luong_dich, so_vat_can ;
@@ -88,20 +88,20 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
        // khởi tạo map
         map_khoi_dong( level , enemy_list , wall_list , player ,so_luong_dich , so_vat_can ,wall_map);
 
-        player.rect.x = 510; player.rect.y =290;
-        enemy_list[2].rect.x = 520 ; enemy_list[2].rect.y =246;
+        //player.rect.x = 510; player.rect.y =290;
+        //enemy_list[2].rect.x = 520 ; enemy_list[2].rect.y =246;
 
        // in hình nhân vật
         player.print_obj(Nhan_vat,renderer);
 
         // in hình địch
-        for(int i=2;i<so_luong_dich;i++){
+        for(int i=1;i<so_luong_dich;i++){
             enemy_list[i].print_obj(Enemy,renderer);
 
         }
 
         // in hình vật cản ( tường )
-        for (int i=20;i<so_vat_can;i++){
+        for (int i=1;i<so_vat_can;i++){
 
             //vẽ tường
             wall_list[i].print_obj(Wall,renderer);
@@ -109,8 +109,8 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
         }
 
          wall_to_bfs(player,wall_map,bfs_map);
-         for(int i=1;i<=16;i++){
-            for(int j=0;j<=31;j++)cout<<setw(2)<<bfs_map[j][i]<<' ';
+         for(int i=1;i<=18;i++){
+            for(int j=0;j<=32;j++)cout<<setw(2)<<bfs_map[j][i]<<' ';
             cout<<'\n';
          }
 
@@ -125,7 +125,7 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
 
         pair<int,int> mouse;
         int upx=0,upy=0;
-        int total_dich = so_luong_dich - 2;
+        int total_dich = so_luong_dich - 1;
         int pre_dich = total_dich ;
         queue<OBJ> list_bullet;
         OBJ vien_dan ;
@@ -156,8 +156,8 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
             else player.clock ++ ;
 
             total_dich =0;
-            for(int i= 2 ;i< so_luong_dich ; i++){
-                if(enemy_list[i].id==0)continue ; // nếu xe tăng này đã bị hạ kiểm tra xe tiếp theo
+            for(int i= 1 ;i< so_luong_dich ; i++){
+                if(enemy_list[i].id==-1)continue ; // nếu xe tăng này đã bị hạ kiểm tra xe tiếp theo
 
                 total_dich++; // biến đếm số lượng xe tăng địch còn lại
 
@@ -176,10 +176,10 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
             pre_dich = total_dich ; // cập nhật số lượng địch thực tế hiện tại
 
 
-            for (int i= 20 ;i< so_vat_can ;i++){
-                if(wall_list[i].id==0)continue ;
+            for (int i= 1 ;i< so_vat_can ;i++){
+                if(wall_list[i].id ==-1)continue ;
                 if(wall_list[i].defense <=0){
-                    wall_list[i].id =0;
+                    wall_list[i].id = -1; // xóa bằng cách đưa id về -1
                     wall_map[wall_list[i].rect.x/40][wall_list[i].rect.y/40]=0;
                     continue;
                 }
@@ -190,7 +190,7 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
 
             // Đối với đạn
 
-            /*for(int i =(int)list_bullet.size();i>0;i--){
+            for(int i =(int)list_bullet.size();i>0;i--){
                 vien_dan = list_bullet.front();
                 new_obj_location(vien_dan.rect,vien_dan.angle,4);
                 list_bullet.pop();
@@ -198,10 +198,10 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
                     list_bullet.push(vien_dan);
                 }
                 vien_dan.print_obj(Bullet,renderer);
-            }*/
+            }
              SDL_RenderPresent(renderer);
              if(fps == 30)fps =0; // hoàn thành một vòng chu trình
-             SDL_Delay(1000);
+             SDL_Delay(30);
 
         }
 

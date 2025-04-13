@@ -26,7 +26,7 @@ void dfs_map(int i, int j , int map_of_level[45][25],int &total , int max_total)
         if(res == 2||total>=max_total)continue;
         int x = rand()%2 - rand()%2 ;
         int y = rand()%2 - rand()%2 ;
-        if(x<2||x>32||y<2||y>18||map_of_level[i+x][j+y])continue;
+        if(x<0||x>32||y<1||y>18||map_of_level[i+x][j+y])continue;
         dfs_map(i+x,j+y,map_of_level,++total,max_total); // ++total : thêm giá trị mới truyền , total++ có thể lỗi
 
     }
@@ -56,24 +56,24 @@ void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , 
     }
 
     else {
-         if(level <5){
+         if(level ==3){
             mapp[30][15]=3; // vị trí ban đầu của người chơi
             mapp[2][2]=mapp[17][2]= mapp[25][4]=2;
          }
          else{
-            // level >= 5 ;
+            // level >= 4 ;
 
             // cx, cy vị trí ô nhân vật chính
             int cx= 2+ rand()%30; // random từ 2 ->31
-            int cy= 2+ rand()%17; // random từ 2 ->18;
+            int cy= 2+ rand()%14; // random từ 2 ->15;
             mapp[cx][cy]=3;
 
-            for(int i= min(10,3+level/5 + level/13 + level/18);i>=0;i-- ){
+            for(int i= min(30,level*2 + level/5 + level/6 + level/7 +level/9);i>0;i-- ){
                 int x,y;
 
                 do{
                     x =2+ rand()%30; // rand từ 2->31
-                    y =2+ rand()%17; // rand từ 2->18
+                    y =2+ rand()%15; // rand từ 2->16
                 } while(mapp[x][y]>0 || sqrt((cx-x)*(cx-x)+(cy-y)*(cy-y))<9);// rand đến khi tìm đucợ vị trí trống và cách đủ xa
                 mapp[x][y] = 2; // vị trí kẻ địch khi random
             }
@@ -90,10 +90,10 @@ void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , 
          }
     }
     //lấy các đối tượng đã được tạo
-    sum_enemy =2;
-    sum_wall   =20;
-    for(int i=2;i<32;i++){
-        for(int j=2;j<19;j++){
+    sum_enemy =1;
+    sum_wall  =1;
+    for(int i=0;i<33;i++){
+        for(int j=1;j<19;j++){
             if(mapp[i][j]>0){
                 SDL_Rect rect = {40*i,40*j,40,40};
                 if(mapp[i][j]==1){
@@ -108,7 +108,8 @@ void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , 
 
                 }
                 else if(mapp[i][j]==3){
-                    player.khoi_tao_nhan_vat(1,min(3,player.defense+1),rect);
+                    // mã nhân dạng ID nhân vật là 0;
+                    player.khoi_tao_nhan_vat(0,min(3,player.defense+1),rect);
 
                     player.angle = 270;
                     //nhân vật thêm một mạng mỗi lượt chơi , tối đa tích trữ 3 mạng

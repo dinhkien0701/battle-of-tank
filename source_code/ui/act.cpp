@@ -181,7 +181,8 @@ bool kiem_tra_va_cham (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy
     if(obj.id!=player.id){
         if(obj.tiep_xuc(player))return true;
     }
-    for(int i= 2 ; i< total_enemy ;i++){
+    for(int i= 1 ; i< total_enemy ;i++){
+       if(enemy_list[i].id == -1)continue ;
        if(obj.id!=enemy_list[i].id && obj.tiep_xuc(enemy_list[i]))return true;
     }
     return false ;
@@ -189,7 +190,7 @@ bool kiem_tra_va_cham (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy
 
 
 bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],int &total_enemy ,int & fps ,int &level){
-    if(enemy.clock == 0){
+    if(enemy.clock == 90){
         srand(std::time(0));
         enemy.angle = 90*(rand()%4);
         enemy.clock = rand()%20 ;
@@ -221,7 +222,7 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
     srand(std::time(0));
     int choose = rand()%9 + min(1, level/6); // random lấy số để xác định có đuổi không (>7)
 
-    if(true/*dist <= 180 + min(level*10,70)||choose >7*/){
+    if(dist <= 180 + min(level*10,70)||choose >7){
          if((enemy.rand_shot == fps)||((enemy.rand_shot == (fps + 15)% 30 && level > 4))){
             //bắn khoảng 2 lần /s
             if(dist <= 180 +min(level*10,70) ){
@@ -234,7 +235,7 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
          //tiếp tục lấy số lần nữa
          choose = choose/7*7 + rand()%10 + min(4,level/3) + max(0 ,3-dist/50) ; // random lấy số để xác định có đuổi không (>7)
 
-         if(/*choose > 7*/true){
+         if(choose > 7){
             int score_area = find_path(enemy.rect, bfs_map);
             //cout<< player.rect.x<<' '<<player.rect.y<<' '<<enemy.rect.x<<' '<<enemy.rect.y<<' '<<enemy.angle<<'\n';
             int angle = enemy.angle ;
@@ -245,7 +246,7 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
                     // khi địch ở gần
                     //cout<<x<<' '<<y;
                     if(x==0){
-                        cout<<"x"<<'\n';
+                        //cout<<"x"<<'\n';
                         if(y>0)angle = 90;
                         else angle = 270 ;
                         break;
@@ -307,13 +308,13 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
 
 
     }
-    for(int i=0;i<=4;i++){
-        enemy_test.rect = enemy.rect;
-        enemy_test.angle = (enemy.angle + 90)%360 ;
+    for(int i=0;i<4;i++){
+        enemy_test = enemy ;
+        enemy_test.angle = (enemy.angle + 90*i)%360 ;
         new_obj_location(enemy_test.rect,enemy_test.angle,2);
         if(kiem_tra_va_cham(enemy_test,player,enemy_list,total_enemy,bfs_map)==false){
             enemy = enemy_test ;
-            enemy.clock =(enemy.clock +1)%90;
+
             return shot;
         }
     }
@@ -322,44 +323,50 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
 }
 
 bool kiem_tra_duong_dan (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy ,OBJ *wall_list , int wall_map[45][25]){
-    bool ans = false ;
+    bool ans = false;
     int x = obj.rect.x;
     int y = obj.rect.y;
     int w = obj.rect.w;
     int h = obj.rect.h;
 
-    if(0<x||x+w>1320||y<40||y+h >760){
+    if(x<0||x+w>1320||y<40||y+h >760){
         return true;
     }
-    x/=40; y/=40 ; w = (x+ w-1)/40 ; h = ( y+ h-1)/40 ;
+
+     w = (x+ w-1)/40 ; h = ( y+ h-1)/40 ;
+     x/=40; y/=40 ;
 
     if(wall_map[x][y]>0){
-        int k = wall_map[x][y];
-        wall_list[k].defense -= obj.attribute ;
+        ans = true;
+        wall_list[wall_map[x][y]].defense-=1;
     }
-    if(wall_map[x][h]>0){
-        int k = wall_map[x][h];
-        wall_list[k].defense -= obj.attribute ;
+    if(wall_map[x][h]>0&&(h!=y)){
+        ans = true;
+        wall_list[wall_map[x][h]].defense-=1;
     }
-    if(wall_map[w][y]>0){
-        int k = wall_map[w][y];
-        wall_list[k].defense -= obj.attribute ;
+    if(wall_map[w][y]>0 && (x!=w)){
+        ans = true;
+        wall_list[wall_map[w][y]].defense-=1;
     }
-    if(wall_map[w][h]>0){
-        int k = wall_map[w][h];
-        wall_list[k].defense -= obj.attribute ;
+    if(wall_map[w][h]>0 && (x!=w)&&(h!=y)){
+        ans = true;
+        wall_list[wall_map[w][h]].defense-=1;
     }
-    if((obj.attribute!=player.attribute) && obj.tiep_xuc(player) ){
-        player.defense -=1;
-        ans =true ;
-    }
-    for(int i= 2 ; i< total_enemy ;i++){
-        if((obj.attribute != enemy_list[i].attribute)&&(obj.tiep_xuc(enemy_list[i]))){
-            enemy_list[i].id =0;
+
+    if(obj.attribute!=player.attribute){
+        if(obj.tiep_xuc(player)){
             ans =true;
+            player.defense-=1;
         }
     }
-    return ans ;
+    for(int i= 1 ; i< total_enemy ;i++){
+       if(enemy_list[i].id == -1)continue;
+       if((enemy_list[i].attribute != obj.attribute ) && obj.tiep_xuc(enemy_list[i])){
+            enemy_list[i].id = -1; // bị trúng đạn xóa xe tăng địch
+            ans =true;
+       }
+    }
+    return ans;
 }
 
 

@@ -20,7 +20,7 @@ struct OBJ{
 
 
     void khoi_tao_nhan_vat (int ID ,int Defense , SDL_Rect Rect){
-        id = ID; // mã nhận dạng đối tượng
+        id = ID; // mã nhận dạng của nhân vật ;
         attribute = 2; // 2 là nhân vật
         rect = Rect;
         defense =Defense;
@@ -46,20 +46,35 @@ struct OBJ{
         id = ID; // mã nhận dạng đối tượng
         attribute = 3; // 0 là trướng ngại vật
         rect = Rect ; // vị trí bức tường
-        defense = 6 ; // ban đâu bức tường có 6 giáp
+        defense = 2 ; // ban đâu bức tường có 6 giáp
         angle = 0 ;
 
     }
     void khoi_tao_dan ( OBJ &obj ){
         // khởi tạo đạn
-        rect = obj.rect;
+        rect = {obj.rect.x,obj.rect.y,10,10};
         angle = obj.angle;
-
         attribute = obj.attribute ; // loại đạn tương đương loại đối tượng tạo ra viên đạn đó
+        if(angle == 0){
+            rect.x+=obj.rect.w;
+            rect.y+=15;
+        }
+        else if(angle==90){
+            rect.x+=15;
+            rect.y+=obj.rect.h;
+        }
+        else if(angle==180){
+            rect.x-=10;
+            rect.y+=15;
+        }
+        else{
+            rect.x+=15;
+            rect.y-=10;
+        }
     }
     void xoa_obj (){
-        // loại bỏ một đối tượng
-        id =0;
+        // loại bỏ một đối tượng , đưa id của đối tượng đó về -1
+        id = -1;
     }
 
     bool tiep_xuc( OBJ &obj){
@@ -67,7 +82,7 @@ struct OBJ{
         // true : có tiếp xúc
         // false : không tiếp xúc
         SDL_Rect b_rect = obj.rect;
-        if(obj.id == 0){
+        if(obj.id == -1){
             //nếu đối tượng đã bị xóa
             return false ;
         }
