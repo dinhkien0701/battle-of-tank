@@ -47,7 +47,9 @@ void bfs_area(int x_max, int y_max , SDL_Rect &rect , int bfs_map[45][25]){
         if(Q.size()>0){
             int x=Q.front().first;
             int y=Q.front().second;
+            Q.pop();
             for(int i=0;i<4;i++){
+
                 int xx = x+a[i];
                 int yy = y+b[i];
                 if(0<=xx&&xx<33&&1<=yy&&yy<19){
@@ -61,11 +63,12 @@ void bfs_area(int x_max, int y_max , SDL_Rect &rect , int bfs_map[45][25]){
                      }
                  }
             }
-            Q.pop();
+
         }
         else{
             int x=QQ.front().first;
             int y=QQ.front().second;
+            QQ.pop();
             for(int i=0;i<4;i++){
                 int xx = x+a[i];
                 int yy = y+b[i];
@@ -75,12 +78,12 @@ void bfs_area(int x_max, int y_max , SDL_Rect &rect , int bfs_map[45][25]){
                         Q.push({xx,yy});
                     }
                     else if(bfs_map[xx][yy]==-1){
-                        bfs_map[xx][yy]=bfs_map[x][y]-1;
+                        bfs_map[xx][yy]= bfs_map[x][y]-1;
                         QQ.push({xx,yy}); // với trường hợp dích tường cập nhật vào QQ ;
-                     }
-                 }
+                    }
+                }
             }
-            QQ.pop();
+
         }
     }
 }
@@ -191,7 +194,7 @@ bool kiem_tra_va_cham (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy
 
 bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],int &total_enemy ,int & fps ,int &level){
     if(enemy.clock == 90){
-        srand(std::time(0));
+        srand( enemy.rect.x*enemy.rect.y + enemy.angle);
         enemy.angle = 90*(rand()%4);
         enemy.clock = rand()%20 ;
     }
@@ -212,28 +215,29 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
     if((enemy.rand_shot == fps)){
         if(level <3){
             // Ở level thấp địch bắn ít đạn
-            srand(std::time(0));
+            srand(enemy.rect.x);
             shot = static_cast<bool>(rand()%2);
         }
         else shot =true ;
     }
 
     // tạo hạt nhân cho random
-    srand(std::time(0));
-    int choose = rand()%9 + min(1, level/6); // random lấy số để xác định có đuổi không (>7)
+    srand( enemy.rect.x-enemy.rect.y + enemy.angle);
 
-    if(dist <= 180 + min(level*10,70)||choose >7){
+    int choose = rand()%9 + min(2, level/3); // random lấy số để xác định có đuổi không (>7)
+
+    if(dist <= 150 + min(level*20,200)||choose >7){
          if((enemy.rand_shot == fps)||((enemy.rand_shot == (fps + 15)% 30 && level > 4))){
             //bắn khoảng 2 lần /s
-            if(dist <= 180 +min(level*10,70) ){
+            if(dist <= 150 +min(level*20,200) ){
                 shot = true ;
                 // kiểm tra lại dist để đảm bảo nó nằm trong bán kính cho phép
             }
          }
          // tạo hạt nhân cho random
-         srand(std::time(0));
+         srand(enemy.rect.y);
          //tiếp tục lấy số lần nữa
-         choose = choose/7*7 + rand()%10 + min(4,level/3) + max(0 ,3-dist/50) ; // random lấy số để xác định có đuổi không (>7)
+         choose = choose/7*7 + rand()%10 + min(4,level/2) + max(0 ,3-dist/50) ; // random lấy số để xác định có đuổi không (>7)
 
          if(choose > 7){
             int score_area = find_path(enemy.rect, bfs_map);

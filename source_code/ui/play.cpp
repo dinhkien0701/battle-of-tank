@@ -31,7 +31,9 @@ SDL_Surface *enemy = IMG_Load("C:/Users/maidi/Downloads/enemy.png");
 SDL_Surface *wall = IMG_Load("C:/Users/maidi/Downloads/z6455392080920_50cdaad3f6b5dc71701d80f8dbee46e5.png");
 
    //Đạn
-SDL_Surface *bullet = IMG_Load("C:/Users/maidi/Downloads/Untitled-removebg-preview.png");
+SDL_Surface *bullet_one = IMG_Load("C:/Users/maidi/Downloads/dan2-removebg-preview.png");
+SDL_Surface *bullet_two = IMG_Load("C:/Users/maidi/Downloads/Untitled-removebg-preview.png");
+
 
 void wall_to_bfs ( OBJ &player , int wall_map[45][25], int bfs_map[45][25]){
     for(int i=0;i<45;i++){
@@ -40,7 +42,7 @@ void wall_to_bfs ( OBJ &player , int wall_map[45][25], int bfs_map[45][25]){
             else bfs_map[i][j]=0;
         }
     }
-    bfs_area( 31, 16, player.rect , bfs_map);
+    bfs_area( 32, 18, player.rect , bfs_map);
 }
 
 
@@ -49,7 +51,8 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
     SDL_Texture* Nhan_vat = SDL_CreateTextureFromSurface(renderer,nhan_vat);
     SDL_Texture* Enemy    = SDL_CreateTextureFromSurface(renderer,enemy);
     SDL_Texture* Wall     = SDL_CreateTextureFromSurface(renderer,wall);
-    SDL_Texture* Bullet   = SDL_CreateTextureFromSurface(renderer,bullet);
+    SDL_Texture* Bullet_one   = SDL_CreateTextureFromSurface(renderer,bullet_one);
+    SDL_Texture* Bullet_two   = SDL_CreateTextureFromSurface(renderer,bullet_two);
 
     TTF_Font* font = TTF_OpenFont("C:/SDL2_ttf-2.24.0/OpenSans-Italic-VariableFont_wdth,wght.ttf", 24);
     int window_w , window_h;
@@ -65,7 +68,7 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
     int bfs_map[45][25];
     memset(bfs_map, 0, sizeof(bfs_map));
 
-    int level = 20;
+    int level = 9;
     int point =0;
     int highestpoint=0;
     OBJ *enemy_list = new OBJ[50];
@@ -79,6 +82,10 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
     while(player.defense>0){
 
         SDL_RenderClear(renderer); // làm sạch bút vẽ
+
+        // làm sạch bản đồ
+        memset(wall_map, 0, sizeof(wall_map));
+        memset(bfs_map, 0, sizeof(bfs_map));
 
         SDL_RenderCopy(renderer,Background,NULL,&background_rect);
 
@@ -109,10 +116,10 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
         }
 
          wall_to_bfs(player,wall_map,bfs_map);
-         for(int i=1;i<=18;i++){
-            for(int j=0;j<=32;j++)cout<<setw(2)<<bfs_map[j][i]<<' ';
+         /*for(int i=1;i<=18;i++){
+            for(int j=0;j<=32;j++)cout<<setw(2)<<wall_map[j][i]<<' ';
             cout<<'\n';
-         }
+         }*/
 
         //cout<<player.rect.x<<" "<<player.rect.y<<" "<<player.rect.w<<" "<<player.rect.h;
         SDL_RenderPresent(renderer);
@@ -197,7 +204,15 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
                 if(kiem_tra_duong_dan(vien_dan, player, enemy_list , so_luong_dich ,wall_list , wall_map)==false){
                     list_bullet.push(vien_dan);
                 }
-                vien_dan.print_obj(Bullet,renderer);
+                // vẽ hình đạn
+                if(vien_dan.attribute == 1){
+                    // nếu là địch
+                    vien_dan.print_obj(Bullet_two,renderer);
+                }
+                else{
+                    // nếu là nhân vật
+                    vien_dan.print_obj(Bullet_one,renderer);
+                }
             }
              SDL_RenderPresent(renderer);
              if(fps == 30)fps =0; // hoàn thành một vòng chu trình

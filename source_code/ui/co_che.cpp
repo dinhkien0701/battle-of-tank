@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <set>
+#include <random>
 #include <utility>  // Thêm thư viện này để sử dụng std::pair
 #include <algorithm>
 #include <thread>
@@ -22,6 +23,7 @@ int distance(int &x1,int &y1,int &x2, int &y2){
 void dfs_map(int i, int j , int map_of_level[45][25],int &total , int max_total){
     map_of_level[i][j]=1;
     int res = 0;
+    srand(i*j + (i-j)*(j-i));
     for(int num = rand()%3 +1; num >0; num--){
         if(res == 2||total>=max_total)continue;
         int x = rand()%2 - rand()%2 ;

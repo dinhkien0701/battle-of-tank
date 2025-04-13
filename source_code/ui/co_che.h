@@ -35,7 +35,7 @@ struct OBJ{
         angle =270;
 
         // Khởi tạo hạt giống cho hàm rand để sinh ngẫu nhiên
-        srand(std::time(0));
+        srand(ID*rect.x + rect.y);
         rand_shot = rand()%30 ; // cơ chế bắn của địch là khoảng  0.5 -> 1s/ lượt bắn , khi ở lượt rand_shot / 60;
         srand(std::time(0));
         clock = rand()%20; // cơ chế luôn hướng
