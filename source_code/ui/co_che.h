@@ -36,7 +36,7 @@ struct OBJ{
 
         // Khởi tạo hạt giống cho hàm rand để sinh ngẫu nhiên
         srand(ID*rect.x + rect.y);
-        rand_shot = rand()%30 ; // cơ chế bắn của địch là khoảng  0.5 -> 1s/ lượt bắn , khi ở lượt rand_shot / 60;
+        rand_shot = rand()%60 ; // cơ chế bắn của địch là khoảng  2s/ lượt bắn , khi ở lượt rand_shot / 60;
         srand(std::time(0));
         clock = rand()%20; // cơ chế luôn hướng
     }
@@ -102,7 +102,9 @@ struct OBJ{
 };
 
 
+int read_high_point();
 
+void write_point(int point);
 
 
 int distance(int &x1,int &y1,int &x2, int &y2);

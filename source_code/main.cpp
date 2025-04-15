@@ -39,10 +39,14 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-
     loadingstart(window,renderer);
-    menustart(window,renderer);
-    run_game(window,renderer);
+    while(true){
+        SDL_SetWindowSize(window,800,800); // thay đổi kích thước của sổ
+        SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED); // căn giữa cửa sổ
+        menustart(window,renderer);
+        run_game(window,renderer);
+    }
+
     SDL_DestroyWindow(window);
 
 

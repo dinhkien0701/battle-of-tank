@@ -20,8 +20,8 @@ int find_path( SDL_Rect &rect , int bfs_map[45][25]){
         // trường hợp ngoài viền , loại bỏ luôn
         return 100000000;
     }
-    vector<int> rect_Rows ={rect.x/40 , (rect.x+39)/40};
-    vector<int> rect_Cols ={rect.y/40 , (rect.y+39)/40};
+    vector<int> rect_Rows ={rect.x/40 , (rect.x+rect.w-1)/40};
+    vector<int> rect_Cols ={rect.y/40 , (rect.y+rect.h-1)/40};
     for(int X :rect_Rows){
         for(int Y :rect_Cols){
             ans += abs(bfs_map[X][Y]);
@@ -33,8 +33,8 @@ int find_path( SDL_Rect &rect , int bfs_map[45][25]){
 void bfs_area(int x_max, int y_max , SDL_Rect &rect , int bfs_map[45][25]){
     queue<pair<int,int>> Q; // tìm đường đi giữa địch và nhân vật
     queue<pair<int,int>> QQ ; // tìm khoảng cách giữa địch và nhân vật trường hợp sẽ phá tường
-    vector<int> rect_Rows ={rect.x/40 , (rect.x+39)/40};
-    vector<int> rect_Cols ={rect.y/40 , (rect.y+39)/40};
+    vector<int> rect_Rows ={rect.x/40 , (rect.x+rect.w-1)/40};
+    vector<int> rect_Cols ={rect.y/40 , (rect.y+rect.h-1)/40};
     for(int X :rect_Rows){
         for(int Y :rect_Cols){
             bfs_map[X][Y]=1;
@@ -106,8 +106,9 @@ bool so_sanh( SDL_Rect a , SDL_Rect b){
     return true;
 }
 
-void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse_left , bool & ban_dan){
+void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse_left , bool & ban_dan , bool &pause , bool &back_to_menu){
     SDL_Event event ;// đối tượng lưu các tương tác
+    mouse_left.first = mouse_left.second = -1; // khởi tạo lại chuột
     while(SDL_PollEvent(&event)!=0){
         switch(event.type){
                 case SDL_QUIT:
@@ -140,6 +141,12 @@ void handleEvent(int &upx , int &upy, std::pair<int,int> &mouse_left , bool & ba
                             break;
                         case SDLK_SPACE :
                             ban_dan = true ;
+                            break;
+                        case SDLK_p : // tạm dừng / tiếp tục chơi game
+                            pause = (!pause);
+                            break;
+                        case SDLK_m : // tạm dừng / tiếp tục chơi game
+                            back_to_menu = true ;
                             break;
 
                     }
@@ -194,7 +201,7 @@ bool kiem_tra_va_cham (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_enemy
 
 bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],int &total_enemy ,int & fps ,int &level){
     if(enemy.clock == 90){
-        srand( enemy.rect.x*enemy.rect.y + enemy.angle);
+        srand( enemy.rect.x*enemy.rect.y + enemy.angle +time(0));
         enemy.angle = 90*(rand()%4);
         enemy.clock = rand()%20 ;
     }
@@ -227,13 +234,17 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
     int choose = rand()%9 + min(2, level/3); // random lấy số để xác định có đuổi không (>7)
 
     if(dist <= 150 + min(level*20,200)||choose >7){
-         if((enemy.rand_shot == fps)||((enemy.rand_shot == (fps + 15)% 30 && level > 4))){
-            //bắn khoảng 2 lần /s
-            if(dist <= 150 +min(level*20,200) ){
-                shot = true ;
-                // kiểm tra lại dist để đảm bảo nó nằm trong bán kính cho phép
+
+        // Hàm kiểm tra có bắn đạn không
+        if((enemy.rand_shot == fps)){
+            shot = true ;
+        }
+        if(dist< 70){
+            if((fps+30)%60 == enemy.rand_shot){
+                shot = true;
             }
-         }
+        }
+
          // tạo hạt nhân cho random
          srand(enemy.rect.y);
          //tiếp tục lấy số lần nữa
@@ -375,7 +386,7 @@ bool kiem_tra_duong_dan (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_ene
 
 
 void lua_chon( OBJ &player , OBJ *enemy_list , int bfs_map[45][25],int &total_enemy, int fps , int &upx , int &upy){
-    if(fps%5 >0){
+    if(false){
         // sau 5 fps thì chạy một lần ;
         return ;
     }
@@ -389,7 +400,7 @@ void lua_chon( OBJ &player , OBJ *enemy_list , int bfs_map[45][25],int &total_en
     }
     if(abs(upx)+abs(upy)>0){
         OBJ player_test = player ;
-        new_obj_location(player_test.rect,player_test.angle,10);
+        new_obj_location(player_test.rect,player_test.angle,2);
         if(kiem_tra_va_cham(player_test ,player_test, enemy_list , total_enemy , bfs_map)==false){
             player = player_test;
         }
@@ -485,4 +496,57 @@ void drawHUD(SDL_Renderer* renderer, TTF_Font* font, int level, int points, int 
     SDL_DestroyTexture(texturePoints);
     SDL_DestroyTexture(textureHighest);
     SDL_DestroyTexture(textureHearts);
+}
+
+
+void draw_banner(SDL_Renderer* renderer, TTF_Font* font, bool ques)
+{
+
+    // Vẽ nền của khung banner chào mừng
+    SDL_Rect hudRect = {0, 0, 1320, 39};
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Màu nền: xám đậm
+    SDL_RenderFillRect(renderer, &hudRect);
+
+    // Vẽ viền khung HUD
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Màu viền: trắng
+    SDL_RenderDrawRect(renderer, &hudRect);
+
+    // Lựa chọn thông điệp dựa trên biến ques
+    std::string message;
+    if (!ques)
+        message = "Bắt đầu màn tiếp theo nhấn Space";
+    else
+        message = "Nếu sẵn sàng nhấn Space để bắt đầu";
+
+    // Định nghĩa màu chữ (trắng)
+    SDL_Color textColor = {255, 255, 255, 255};
+
+    // Tạo surface từ chuỗi thông điệp sử dụng SDL_ttf (sử dụng TTF_RenderText_Blended cho chất lượng tốt)
+    SDL_Surface* surfaceMessage = TTF_RenderUTF8_Blended(font, message.c_str(), textColor);
+    if (!surfaceMessage) {
+        SDL_Log("Error creating text surface: %s", TTF_GetError());
+        return;
+    }
+
+    // Tạo texture từ surface
+    SDL_Texture* textureMessage = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    if (!textureMessage) {
+        SDL_Log("Error creating texture: %s", SDL_GetError());
+        SDL_FreeSurface(surfaceMessage);
+        return;
+    }
+
+    // Tính toán vị trí để căn giữa thông điệp trong khung HUD
+    SDL_Rect destRect;
+    destRect.x = (hudRect.w - surfaceMessage->w) / 2;
+    destRect.y = (hudRect.h - surfaceMessage->h) / 2;
+    destRect.w = surfaceMessage->w;
+    destRect.h = surfaceMessage->h;
+
+    // Vẽ texture lên renderer
+    SDL_RenderCopy(renderer, textureMessage, NULL, &destRect);
+
+    // Giải phóng bộ nhớ của surface và texture
+    SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(textureMessage);
 }

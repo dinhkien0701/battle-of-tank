@@ -2,6 +2,7 @@
 #include <SDL2/SDL_Image.h>
 #include <cmath>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <set>
 #include <random>
@@ -15,6 +16,20 @@
 using namespace std;
 
 std::atomic<bool> running(true);  // Kiểm soát vòng lặp , đảm bao gpu hoạt động trơn chu
+
+int read_high_point(){
+    ifstream file("C:/SDL2_Game/Point/high_point.txt");
+    int number ;
+    file>>number;
+    file.close();
+    return number ;
+}
+
+void write_point(int point){
+    ofstream file("C:/SDL2_Game/Point/high_point.txt", std::ios::trunc); // mở file ở chế độ ghi , xóa hết nội dung trong file
+    file<<point;
+    file.close();
+}
 
 int distance(int &x1,int &y1,int &x2, int &y2){
     return static_cast<int>(sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)));
@@ -104,6 +119,7 @@ void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , 
                     sum_wall++;
                 }
                 else if(mapp[i][j]==2){
+
                     make_enemy[sum_enemy].khoi_tao_dich(sum_enemy,rect);
                     make_enemy[sum_enemy].angle = 270;
                     sum_enemy++;
@@ -111,7 +127,9 @@ void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , 
                 }
                 else if(mapp[i][j]==3){
                     // mã nhân dạng ID nhân vật là 0;
-                    player.khoi_tao_nhan_vat(0,min(3,player.defense+1),rect);
+                    rect.w-=5;// làm nhỏ đi
+                    rect.h-=5;// làm nhỉ đi
+                    player.khoi_tao_nhan_vat(0,player.defense+1,rect);
 
                     player.angle = 270;
                     //nhân vật thêm một mạng mỗi lượt chơi , tối đa tích trữ 3 mạng

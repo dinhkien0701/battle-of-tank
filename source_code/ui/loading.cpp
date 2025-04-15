@@ -3,7 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include "loading.h"
 void loadingstart(SDL_Window *window,SDL_Renderer *renderer){
-    SDL_Surface* surface = IMG_Load("C:/Users/maidi/Downloads/ld.png");//tai anh
+    SDL_Surface* surface = IMG_Load("image/loading.png");//tai anh
     if(!surface){
         SDL_Log("Khong tai dc anh loading %s",IMG_GetError());
         return;

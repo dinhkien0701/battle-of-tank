@@ -17,22 +17,23 @@
 #include "menu.h"
 #include "co_che.h"
 #include "act.h"
+
 using namespace std;
-SDL_Surface *nen_surface = IMG_Load("C:/Users/maidi/Downloads/z6454705968533_fb6131d252bf4e6c8d54e5c856179c33.jpg");
+SDL_Surface *nen_surface = IMG_Load("image/background.jpg");
     // Main
-SDL_Surface *nhan_vat = IMG_Load("C:/Users/maidi/Downloads/mann.png");
+SDL_Surface *nhan_vat = IMG_Load("image/xe_do.png");
 
     //Đich
-SDL_Surface *enemy = IMG_Load("C:/Users/maidi/Downloads/enemy.png");
+SDL_Surface *enemy = IMG_Load("image/xe_dich.png");
 
 
     //Tường thành
 
-SDL_Surface *wall = IMG_Load("C:/Users/maidi/Downloads/z6455392080920_50cdaad3f6b5dc71701d80f8dbee46e5.png");
+SDL_Surface *wall = IMG_Load("image/tuong.png");
 
    //Đạn
-SDL_Surface *bullet_one = IMG_Load("C:/Users/maidi/Downloads/dan2-removebg-preview.png");
-SDL_Surface *bullet_two = IMG_Load("C:/Users/maidi/Downloads/Untitled-removebg-preview.png");
+SDL_Surface *bullet_one = IMG_Load("image/dan_do.png");
+SDL_Surface *bullet_two = IMG_Load("image/dan_den.png");
 
 
 void wall_to_bfs ( OBJ &player , int wall_map[45][25], int bfs_map[45][25]){
@@ -47,6 +48,13 @@ void wall_to_bfs ( OBJ &player , int wall_map[45][25], int bfs_map[45][25]){
 
 
 void run_game(SDL_Window *window , SDL_Renderer *renderer){
+
+    bool back_to_menu = false ; // khởi tạo nút thoát khỏi màn chơi
+
+    //làm sạch thao tác
+    SDL_Event event;
+    while(SDL_PollEvent(&event));// xoa het cac thao tac phim thua
+
     SDL_Texture* Background = SDL_CreateTextureFromSurface(renderer,nen_surface);
     SDL_Texture* Nhan_vat = SDL_CreateTextureFromSurface(renderer,nhan_vat);
     SDL_Texture* Enemy    = SDL_CreateTextureFromSurface(renderer,enemy);
@@ -54,7 +62,9 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
     SDL_Texture* Bullet_one   = SDL_CreateTextureFromSurface(renderer,bullet_one);
     SDL_Texture* Bullet_two   = SDL_CreateTextureFromSurface(renderer,bullet_two);
 
-    TTF_Font* font = TTF_OpenFont("C:/SDL2_ttf-2.24.0/OpenSans-Italic-VariableFont_wdth,wght.ttf", 24);
+    TTF_Font* font = TTF_OpenFont("Font/OpenSans.ttf", 22);
+    TTF_Font* font_end = TTF_OpenFont("Font/OpenSans.ttf", 40);
+
     int window_w , window_h;
     SDL_SetWindowSize(window,1320,760); // thay đổi kích thước của sổ
     SDL_Rect background_rect = {0,0,1320,760};
@@ -68,18 +78,18 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
     int bfs_map[45][25];
     memset(bfs_map, 0, sizeof(bfs_map));
 
-    int level = 9;
-    int point =0;
-    int highestpoint=0;
+    int level = 1 ;
+    int point = 0;
+    int highestpoint=  read_high_point(); // đọc điểm cao nhất đã từng đạt được
     OBJ *enemy_list = new OBJ[50];
     OBJ *wall_list  = new OBJ[400];
     OBJ player;
     int so_luong_dich, so_vat_can ;
-    bool ban_dan =false ;
+    bool space =false ;
     int fps = 0 ;
-    player.defense = 3; // người chơi ban đầu có 3 mạng
-
-    while(player.defense>0){
+    player.defense = 2; // người chơi ban đầu có 3 ( 2+ 1 mạng lúc tạo map )
+    bool start = true ; // có phải người chơi bắt đầu chơi không
+    while(player.defense>0 && back_to_menu ==false){
 
         SDL_RenderClear(renderer); // làm sạch bút vẽ
 
@@ -122,42 +132,54 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
          }*/
 
         //cout<<player.rect.x<<" "<<player.rect.y<<" "<<player.rect.w<<" "<<player.rect.h;
+
+        draw_banner(renderer, font, start);
         SDL_RenderPresent(renderer);
 
         /*if(enemy_list[2].tiep_xuc(player)==false){
             cout<<" aaaaaaaaaaaaaaaaa";
         }*/
-        SDL_Delay(3000);
 
-
+        //Khởi tạo các thành phần cho hàm HandleEvent()
         pair<int,int> mouse;
         int upx=0,upy=0;
+        bool pause = false ; // khởi tạo nút tạm dừng
+
+
         int total_dich = so_luong_dich - 1;
         int pre_dich = total_dich ;
         queue<OBJ> list_bullet;
         OBJ vien_dan ;
-        while(player.defense >0 && total_dich >0){
+
+        // banner giới thiệu
+        // tận dụng luôn biến space
+        do{
+            handleEvent(upx,upy,mouse,space , pause , back_to_menu);
+
+        }while( space == false);
+        space = false ; // đặt lại giá trị space
+        while(player.defense >0 && total_dich >0 && back_to_menu ==false){
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer,Background,NULL,&background_rect);
 
             drawHUD(renderer, font, level, point, highestpoint, player.defense);
 
-            fps++;
+
             mouse =make_pair(-1,-1);
 
-            handleEvent(upx,upy,mouse , ban_dan);
+            handleEvent(upx,upy,mouse , space , pause , back_to_menu );
 
             //thực hiện vẽ xe tăng sau điều khiển
             lua_chon(player ,enemy_list , bfs_map, so_luong_dich, fps , upx ,upy);
             player.print_obj(Nhan_vat,renderer);
             // nếu lựa chọn bắn đạn
 
-            if(ban_dan && player.clock >= 15){
+            if(space && player.clock >= 15){
                 vien_dan.khoi_tao_dan(player);
                 list_bullet.push(vien_dan);
                 // bắn xong reset ;
                 player.clock =1;
-                ban_dan =false ;// bắn xong
+                space =false ;// bắn xong
             }
 
             else player.clock ++ ;
@@ -215,14 +237,58 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
                 }
             }
              SDL_RenderPresent(renderer);
-             if(fps == 30)fps =0; // hoàn thành một vòng chu trình
+             if(fps == 60)fps =0; // hoàn thành một vòng chu trình
+             else fps ++;
              SDL_Delay(30);
+
+             // nếu người chơi muốn tạm dừng
+             if(pause ==true){
+                SDL_Rect rect_pause = {0,0,1320,40};
+                menu_HUD(renderer, font, rect_pause, "Đang tạm dừng nhấn phím P để tiếp tục chơi !");
+                SDL_RenderPresent(renderer);
+                do{
+                    SDL_Delay(30);
+                    handleEvent(upx,upy,mouse , space , pause ,back_to_menu);
+                    upx=upy =0;
+                }while((pause==true)&&(back_to_menu ==false));
+             }
+
+             if(point > highestpoint){
+                //cập nhật điểm cao theo thời gian thực
+                write_point(point);
+                highestpoint = point ;
+             }
+        }
+
+
+
+
+        if(player.defense ==0){
+            // khi người chơi kết thúc ván đấu
+            drawHUD(renderer, font, level, point, highestpoint, player.defense); // render lại kết quả cuối cùng
+
+            SDL_Rect rect_over = {500,350,350,80};
+            menu_HUD(renderer, font_end, rect_over, "GAME OVER !");
+
+            SDL_Rect rect_to_menu = {500,460,350,40};
+            menu_HUD(renderer, font, rect_to_menu, "Nhấn phím M hoặc SPACE để trở về MENU");
+            SDL_RenderPresent(renderer);
+            SDL_Delay(1000);
+            space = false ;
+            do{
+                SDL_Delay(30);
+                handleEvent(upx,upy,mouse , space , pause ,back_to_menu);
+
+            }while(back_to_menu == false && space == false);
 
         }
 
         // kết thúc màn hiện tại , lên level , tặng  số điểm   = level;
+
         point += level;
         level++;
-
+        start = false ; // bây giừ là tiếp tục chơi rồi , nên đổi lại giá trị start
     }
+
+
 }
