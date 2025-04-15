@@ -452,10 +452,11 @@
 	<SDL2/SDL.h>
 	<iostream>
 
-1744639656 source:c:\sdl2_game\source_code\main.cpp
+1744738878 source:c:\sdl2_game\source_code\main.cpp
 	<SDL2/SDL.h>
 	<SDL2/SDL_Image.h>
 	<SDL2/SDL_ttf.h>
+	<SDL2/SDL_mixer.h>
 	<iostream>
 	<cmath>
 	<vector>
@@ -465,10 +466,11 @@
 	"menu.h"
 	"co_che.h"
 	"act.h"
+	"music.h"
 
-1741352818 c:\sdl2_game\source_code\ui\loading.h
+1744736541 c:\sdl2_game\source_code\ui\loading.h
 
-1744647510 source:c:\sdl2_game\source_code\ui\loading.cpp
+1744736541 source:c:\sdl2_game\source_code\ui\loading.cpp
 	<algorithm>
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
@@ -480,7 +482,7 @@
 	"C:\SDL2-2.30.10\x86_64-w64-mingw32\include\SDL2\begin_code.h"
 	"C:\SDL2-2.30.10\x86_64-w64-mingw32\include\SDL2\close_code.h"
 
-1744652576 source:c:\sdl2_game\source_code\ui\menu.cpp
+1744736857 source:c:\sdl2_game\source_code\ui\menu.cpp
 	<SDL2/SDL.h>
 	<cstring>
 	<SDL2/SDL_Image.h>
@@ -491,13 +493,15 @@
 	"menu.h"
 	"act.h"
 	"co_che.h"
+	"music.h"
 	<algorithm>
 
-1744648617 c:\sdl2_game\source_code\ui\menu.h
+1744736836 c:\sdl2_game\source_code\ui\menu.h
 	<SDL2/SDL_ttf.h>
 	<string>
+	"music.h"
 
-1744655678 source:c:\sdl2_game\source_code\ui\co_che.cpp
+1744740869 source:c:\sdl2_game\source_code\ui\co_che.cpp
 	<SDL2/SDL.h>
 	<SDL2/SDL_Image.h>
 	<cmath>
@@ -514,12 +518,13 @@
 	"co_che.h"
 	"act.h"
 
-1744655678 c:\sdl2_game\source_code\ui\co_che.h
+1744734706 c:\sdl2_game\source_code\ui\co_che.h
 	<cmath>
 	<iostream>
 	<ctime>
+	"music.h"
 
-1744704613 source:c:\sdl2_game\source_code\ui\act.cpp
+1744743961 source:c:\sdl2_game\source_code\ui\act.cpp
 	<iostream>
 	<cstdlib>
 	<cmath>
@@ -549,7 +554,7 @@
 	"co_che.h"
 	"act.h"
 
-1744704333 source:c:\sdl2_game\source_code\ui\play.cpp
+1744744263 source:c:\sdl2_game\source_code\ui\play.cpp
 	<iostream>
 	<queue>
 	<iomanip>
@@ -579,4 +584,32 @@
 	"SDL.h"
 	"begin_code.h"
 	"close_code.h"
+
+1744706209 c:\sdl2-2.30.10\x86_64-w64-mingw32\include\include\sdl2\sdl_mixer.h
+	"SDL_stdinc.h"
+	"SDL_rwops.h"
+	"SDL_audio.h"
+	"SDL_endian.h"
+	"SDL_version.h"
+	"begin_code.h"
+	"close_code.h"
+
+1744709977 source:c:\sdl2_game\source_code\ui\music.cpp
+	<SDL2/SDL.h>
+	<SDL2/SDL_Image.h>
+	<SDL2/SDL_ttf.h>
+	<SDL2/SDL_mixer.h>
+	<iostream>
+	<cmath>
+	<vector>
+	<utility>
+	<algorithm>
+	"loading.h"
+	"menu.h"
+	"co_che.h"
+	"act.h"
+
+1744719290 c:\sdl2_game\source_code\ui\music.h
+	<SDL2/SDL_mixer.h>
+	<string>
 

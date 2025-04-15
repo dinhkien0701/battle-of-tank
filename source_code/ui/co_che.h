@@ -3,6 +3,7 @@
 #include<cmath>
 #include<iostream>
 #include <ctime>
+#include "music.h"
 //tiền khai báo
 
 struct OBJ{
@@ -114,6 +115,6 @@ void dfs_map(int i, int j , int map_of_level[45][25],int &total , int max_total)
 
 void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , int &sum_enemy , int &sum_wall,int wall_map[45][25]);
 
-void run_game(SDL_Window *window , SDL_Renderer *renderer);
+void run_game(SDL_Window *window , SDL_Renderer *renderer , Sound &wall_destroy , Sound &tank_destroy , Sound &shot_music , Sound &crash);
 
 #endif // CO_CHE_H

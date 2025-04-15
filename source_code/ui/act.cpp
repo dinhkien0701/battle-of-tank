@@ -257,16 +257,16 @@ bool Auto_ACT( OBJ &enemy , OBJ &player , OBJ *enemy_list,int bfs_map[45][25],in
             SDL_Rect pick_rect = enemy.rect;
             for(int i=0;i<4;i++){
 
-                if(max(abs(x),abs(y))<50 + min(20,level*3)){
+                if(max(abs(x),abs(y))<75 + min(20,level*3)){
                     // khi địch ở gần
                     //cout<<x<<' '<<y;
-                    if(x==0){
+                    if(abs(x)<=5){
                         //cout<<"x"<<'\n';
                         if(y>0)angle = 90;
                         else angle = 270 ;
                         break;
                     }
-                    else if(y==0){
+                    else if(abs(y)<=5){
                         //cout<<"y"<<'\n';
                         if(x>0)angle = 0;
                         else angle =  180;
@@ -375,21 +375,21 @@ bool kiem_tra_duong_dan (OBJ &obj ,OBJ &player, OBJ *enemy_list , int &total_ene
         }
     }
     for(int i= 1 ; i< total_enemy ;i++){
-       if(enemy_list[i].id == -1)continue;
+       if(enemy_list[i].id == -1 || enemy_list[i].id == -2  )continue;
        if((enemy_list[i].attribute != obj.attribute ) && obj.tiep_xuc(enemy_list[i])){
-            enemy_list[i].id = -1; // bị trúng đạn xóa xe tăng địch
+            enemy_list[i].id = -2; // bị trúng đạn xóa xe tăng địch , bật phát nhạc
             ans =true;
        }
     }
     return ans;
 }
 
+bool cham_tuong( int x , int y , int bfs_map[45][25]){
+    return bfs_map[x/40][y/40]<0 ; // nếu chạm tường return true
+}
 
 void lua_chon( OBJ &player , OBJ *enemy_list , int bfs_map[45][25],int &total_enemy, int fps , int &upx , int &upy){
-    if(false){
-        // sau 5 fps thì chạy một lần ;
-        return ;
-    }
+
     if(abs(upx)>= abs(upy)){
         if(upx >0)player.angle = 0;
         else if ( upx <0)player.angle =180;
@@ -400,9 +400,75 @@ void lua_chon( OBJ &player , OBJ *enemy_list , int bfs_map[45][25],int &total_en
     }
     if(abs(upx)+abs(upy)>0){
         OBJ player_test = player ;
-        new_obj_location(player_test.rect,player_test.angle,2);
+        new_obj_location(player_test.rect,player_test.angle,4);
         if(kiem_tra_va_cham(player_test ,player_test, enemy_list , total_enemy , bfs_map)==false){
             player = player_test;
+        }
+        else{
+            int x = player_test.rect.x;
+            int y = player_test.rect.y;
+            int w = player_test.rect.x+player_test.rect.w-1;
+            int h = player_test.rect.y+player_test.rect.h-1;
+            if(player.angle ==0){
+                if(cham_tuong(w,y,bfs_map)^cham_tuong(w,h,bfs_map)){
+                    OBJ T1 = player ;
+                    OBJ T2 = player ;
+                    T1.rect.y-=2;
+                    T2.rect.y+=2;
+                    if(cham_tuong(w,y,bfs_map)==false && kiem_tra_va_cham(T1,T1, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T1;
+                    }
+                    else if(cham_tuong(w,h,bfs_map)==false && kiem_tra_va_cham(T2,T2, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T2;
+                    }
+                }
+
+            }
+            else if(player.angle ==180){
+                if(cham_tuong(x,y,bfs_map)^cham_tuong(x,h,bfs_map)){
+                    OBJ T1 = player ;
+                    OBJ T2 = player ;
+                    T1.rect.y-=2;
+                    T2.rect.y+=2;
+                    if(cham_tuong(x,y,bfs_map)==false && kiem_tra_va_cham(T1,T1, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T1;
+                    }
+                    else if(cham_tuong(x,h,bfs_map)==false && kiem_tra_va_cham(T2,T2, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T2;
+                    }
+                }
+
+            }
+            else if(player.angle == 90){
+                if(cham_tuong(x,h,bfs_map)^cham_tuong(w,h,bfs_map)){
+                    OBJ T1 = player ;
+                    OBJ T2 = player ;
+                    T1.rect.x-=2;
+                    T2.rect.x+=2;
+                    if(cham_tuong(x,h,bfs_map)==false && kiem_tra_va_cham(T1,T1, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T1;
+                    }
+                    else if(cham_tuong(w,h,bfs_map)==false && kiem_tra_va_cham(T2,T2, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T2;
+                    }
+                }
+
+            }
+            else if(player.angle ==270){
+                if(cham_tuong(x,y,bfs_map)^cham_tuong(w,y,bfs_map)){
+                    OBJ T1 = player ;
+                    OBJ T2 = player ;
+                    T1.rect.x-=2;
+                    T2.rect.x+=2;
+                    if(cham_tuong(x,y,bfs_map)==false && kiem_tra_va_cham(T1,T1, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T1;
+                    }
+                    else if(cham_tuong(w,y,bfs_map)==false && kiem_tra_va_cham(T2,T2, enemy_list ,total_enemy , bfs_map)==false){
+                        player = T2;
+                    }
+                }
+
+            }
         }
     }
     upx = upy =0;

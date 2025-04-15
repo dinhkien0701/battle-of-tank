@@ -9,11 +9,14 @@
 #include "menu.h"
 #include "act.h"
 #include "co_che.h"
+#include "music.h"
 using namespace std;
 
-bool pick_area(SDL_Rect rect , pair<int,int> mouse ){
+bool pick_area(SDL_Rect rect , pair<int,int> mouse , Sound &pick_mouse){
     if(rect.x<=mouse.first&&mouse.first<rect.x+rect.w){
         if(rect.y<=mouse.second && mouse.second < rect.y+rect.h){
+
+            pick_mouse.play();// chọn chuột đúng vùng , phát nhạc
             return true ;
         }
     }
@@ -84,7 +87,7 @@ void menu_HUD(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect rect, std::string
     SDL_DestroyTexture(textureText);
 }
 
-void menustart(SDL_Window *window,SDL_Renderer *renderer){
+void menustart(SDL_Window *window,SDL_Renderer *renderer , Sound &pick_mouse){
     TTF_Font* font = TTF_OpenFont("Font/OpenSans.ttf", 22);
 
     SDL_Surface* surface = IMG_Load("image/menu_background.png");//tai anh
@@ -152,12 +155,12 @@ void menustart(SDL_Window *window,SDL_Renderer *renderer){
         //kiểm tra thao tác
         handleEvent(upx,upy,mouse,t1,t2,t3);
 
-        if(pick_area(dest_rect_play,mouse)){
+        if(pick_area(dest_rect_play,mouse,pick_mouse)){
             // bắt đầu vào màn chơi
             return ;
         }
 
-        else if(pick_area(rect_point,mouse)){
+        else if(pick_area(rect_point,mouse,pick_mouse)){
             //nếu người chơi muốn xem điểm
             SDL_Rect rect_back = {0.1*dest_rect.w+dest_rect.x,0.6*dest_rect.h+dest_rect.y,0.30*dest_rect.w,0.07*dest_rect.h};
             SDL_Rect rect_delete = {0.5*dest_rect.w+dest_rect.x,0.6*dest_rect.h+dest_rect.y,0.40*dest_rect.w,0.07*dest_rect.h};
@@ -174,14 +177,14 @@ void menustart(SDL_Window *window,SDL_Renderer *renderer){
                  SDL_RenderPresent(renderer);
                  handleEvent(upx,upy,mouse,t1,t2,t3);
                  SDL_Delay(16);
-                 if(pick_area(rect_delete,mouse)==true){
+                 if(pick_area(rect_delete,mouse,pick_mouse)==true){
                         write_point(0);
                         highestpoint = 0;
                  }
 
-            }while(pick_area(rect_back,mouse)==false);
+            }while(pick_area(rect_back,mouse,pick_mouse)==false);
         }
-        else if(pick_area(rect_guide,mouse)){
+        else if(pick_area(rect_guide,mouse,pick_mouse)){
            SDL_Rect rect_text = {dest_rect.x,dest_rect.y+ 0.1*dest_rect.h,dest_rect.w,0.65*dest_rect.h};
            SDL_Rect rect_back = {dest_rect.x,dest_rect.y+0.85*dest_rect.h,dest_rect.w,0.1*dest_rect.h};
            do{
@@ -195,7 +198,7 @@ void menustart(SDL_Window *window,SDL_Renderer *renderer){
                  handleEvent(upx,upy,mouse,t1,t2,t3);
                  SDL_Delay(16);
 
-            }while(pick_area(rect_back,mouse)==false);
+            }while(pick_area(rect_back,mouse,pick_mouse)==false);
         }
         SDL_Delay(16);
         SDL_RenderClear(renderer);

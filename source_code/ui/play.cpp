@@ -21,7 +21,7 @@
 using namespace std;
 SDL_Surface *nen_surface = IMG_Load("image/background.jpg");
     // Main
-SDL_Surface *nhan_vat = IMG_Load("image/xe_do.png");
+SDL_Surface *nhan_vat = IMG_Load("image/xe.png");
 
     //Đich
 SDL_Surface *enemy = IMG_Load("image/xe_dich.png");
@@ -47,7 +47,7 @@ void wall_to_bfs ( OBJ &player , int wall_map[45][25], int bfs_map[45][25]){
 }
 
 
-void run_game(SDL_Window *window , SDL_Renderer *renderer){
+void run_game(SDL_Window *window , SDL_Renderer *renderer , Sound &wall_destroy , Sound &tank_destroy , Sound &shot_music , Sound &crash){
 
     bool back_to_menu = false ; // khởi tạo nút thoát khỏi màn chơi
 
@@ -157,8 +157,16 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
             handleEvent(upx,upy,mouse,space , pause , back_to_menu);
 
         }while( space == false);
+
         space = false ; // đặt lại giá trị space
+        back_to_menu = false ;// đặt lại giá trị nút M
+        //làm sạch thao tác
+        SDL_Event event;
+        while(SDL_PollEvent(&event));// xoa het cac thao tac phim thua
         while(player.defense >0 && total_dich >0 && back_to_menu ==false){
+
+            int present_defense = player.defense ; //lưu số mạng hiện tại của người chơi
+
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer,Background,NULL,&background_rect);
 
@@ -180,6 +188,7 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
                 // bắn xong reset ;
                 player.clock =1;
                 space =false ;// bắn xong
+                shot_music.play();
             }
 
             else player.clock ++ ;
@@ -187,6 +196,13 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
             total_dich =0;
             for(int i= 1 ;i< so_luong_dich ; i++){
                 if(enemy_list[i].id==-1)continue ; // nếu xe tăng này đã bị hạ kiểm tra xe tiếp theo
+
+                else if(enemy_list[i].id==-2){
+                    // nếu xe tăng vừa bị hạ;
+                    tank_destroy.play(); // phát âm thanh
+                    enemy_list[i].id =-1 ;// đặt id =-1 để không phát âm thanh lần nữa
+                    continue;
+                }
 
                 total_dich++; // biến đếm số lượng xe tăng địch còn lại
 
@@ -208,6 +224,7 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
             for (int i= 1 ;i< so_vat_can ;i++){
                 if(wall_list[i].id ==-1)continue ;
                 if(wall_list[i].defense <=0){
+                    wall_destroy.play();
                     wall_list[i].id = -1; // xóa bằng cách đưa id về -1
                     wall_map[wall_list[i].rect.x/40][wall_list[i].rect.y/40]=0;
                     continue;
@@ -235,6 +252,10 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer){
                     // nếu là nhân vật
                     vien_dan.print_obj(Bullet_one,renderer);
                 }
+            }
+            if(present_defense>player.defense){
+                //nếu người chơi bị giảm mạng -> bị bắn trúng , phát tiếng
+                crash.play();
             }
              SDL_RenderPresent(renderer);
              if(fps == 60)fps =0; // hoàn thành một vòng chu trình

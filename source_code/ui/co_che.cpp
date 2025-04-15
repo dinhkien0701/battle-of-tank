@@ -127,8 +127,7 @@ void map_khoi_dong( int level , OBJ *make_enemy , OBJ *make_obj , OBJ &player , 
                 }
                 else if(mapp[i][j]==3){
                     // mã nhân dạng ID nhân vật là 0;
-                    rect.w-=5;// làm nhỏ đi
-                    rect.h-=5;// làm nhỉ đi
+
                     player.khoi_tao_nhan_vat(0,player.defense+1,rect);
 
                     player.angle = 270;
