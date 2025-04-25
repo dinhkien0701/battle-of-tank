@@ -14,3 +14,6 @@ Game sử dụng SDL2 bao gồm cả mixer/image/ttf
 Nguồn ảnh : AI , cắt từ một số game , vẽ một số hình đơn giản + sử dụng https://www.remove.bg/vi để xóa nền tạo png
 Nguồn nhạc : nhạc nền ( Tiny Troopers ) ;  âm thanh đạn , tiếng nổ : https://tiengdong.com/
 Nguồn font chữ : google font OpenSans
+
+
+Link giới thiệu + cơ chế + demo  https://vnueduvn-my.sharepoint.com/:v:/g/personal/24021540_vnu_edu_vn/EaxOfEO0mdVCoskey8FzEcMB5suxvzH7Ledj8sh7SC4cDA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&e=7GDUev
