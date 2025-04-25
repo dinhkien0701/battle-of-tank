@@ -16,4 +16,4 @@ Nguồn nhạc : nhạc nền ( Tiny Troopers ) ;  âm thanh đạn , tiếng n�
 Nguồn font chữ : google font OpenSans
 
 
-Link giới thiệu + cơ chế + demo  https://vnueduvn-my.sharepoint.com/:v:/g/personal/24021540_vnu_edu_vn/EaxOfEO0mdVCoskey8FzEcMBm3LNTTfCjmuYmrQFxHIing?e=lDjdwE&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
+Link giới thiệu + cơ chế + demo  https://www.youtube.com/watch?v=PYt8heMRYs4
