@@ -45,9 +45,9 @@ struct OBJ{
     void khoi_tao_tuong (int ID , SDL_Rect Rect){
         // khơi tạo chướng ngại vật ( tường )
         id = ID; // mã nhận dạng đối tượng
-        attribute = 3; // 0 là trướng ngại vật
+        attribute = 3; // 3 là trướng ngại vật
         rect = Rect ; // vị trí bức tường
-        defense = 2 ; // ban đâu bức tường có 6 giáp
+        defense = 3 ; // ban đâu bức tường có 3 giáp
         angle = 0 ;
 
     }
