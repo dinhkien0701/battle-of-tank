@@ -27,7 +27,7 @@
 - [Luật chơi](#luật-chơi)
 
 ## Đối tượng
-### [Cấu trúc của đối tượng](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
+### [Cấu trúc của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
 1. Nhân vật (Xe tăng người chơi)
 * Nhân vật trong trò chơi được định danh thông qua id và được khởi tạo với thuộc tính attribute = 2 để phân biệt nó với các đối tượng khác. Ngoài ra:
 
