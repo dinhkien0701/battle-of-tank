@@ -6,8 +6,11 @@
 
 ## Hướng dẫn cài đặt game 
 ### [Truy cập vào Releases để tải game ](https://github.com/dinhkien0701/battle-of-tank/releases)
-*Ta có 3 lựa chọn
-**BattleOfTank_Setup.exe :
+
+* BattleOfTank_Setup.exe : Tải game về cài đặt và chơi luôn
+* Source.Code.to.Build.App.zip : Phiên bản chứa cả file Setup để cài game kèm mã nguồn đã được thay đổi để có thể tạo ứng dụng hoàn chỉnh
+* Battle.Of.Tank.zip : phiên bản mã nguồn gốc của game , chưa tùy biến và có thể chơi 
+
 
 ## Hướng dẫn chơi game
 * Mỗi người chơi sẽ bắt đầu với 3 mạng , việc vượt qua mỗi level sẽ giúp người chơi  tăng thêm một mạng 
@@ -19,13 +22,3 @@
 * Đạn của nhân vật trúng địch sẽ  tiêu diệt kẻ địch đó , các bức tường chịu tối đa 3 lần trúng đạn , sau khi trúng đạn lần thứ 3 tường sẽ sập!
 
 
-Game được cấu tạo nhờ  việc sử dụng thuật toán chính yếu là DFS để tạo bản đồ và BFS để tạo Simple AI cho địch 
-Game sử dụng SDL2 bao gồm cả mixer/image/ttf
-
-
-Nguồn ảnh : AI , cắt từ một số game , vẽ một số hình đơn giản + sử dụng https://www.remove.bg/vi để xóa nền tạo png
-Nguồn nhạc : nhạc nền ( Tiny Troopers ) ;  âm thanh đạn , tiếng nổ : https://tiengdong.com/
-Nguồn font chữ : google font OpenSans
-
-
-Link giới thiệu + cơ chế + demo  https://www.youtube.com/watch?v=PYt8heMRYs4
