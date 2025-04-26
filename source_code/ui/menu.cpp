@@ -88,7 +88,7 @@ void menu_HUD(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect rect, std::string
 }
 
 void menustart(SDL_Window *window,SDL_Renderer *renderer , Sound &pick_mouse){
-    TTF_Font* font = TTF_OpenFont("Font/OpenSans.ttf", 22);
+    TTF_Font* font = TTF_OpenFont("font/OpenSans.ttf", 22);
 
     SDL_Surface* surface = IMG_Load("image/menu_background.png");//tai anh
     SDL_Surface* surfaceplay = IMG_Load("image/image_play.png");// tai anh play

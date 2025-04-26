@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
         printf("Failed to initialize SDL Mixer: %s\n", Mix_GetError());
         return -1;
     }
-    SDL_Window* window = SDL_CreateWindow("Tank Gun Battle", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800,800, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Battle Of Tank", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800,800, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    Sound background_music_menu = Sound("music/background_music_menu.mp3",2);
+    Sound background_music_menu = Sound("music/background_music_menu.mp3", 2);
     Sound background_music_game = Sound("music/background_music_game.mp3",2);
 
     Sound wall_destroy = Sound("music/wall_destroy.mp3",1);

@@ -62,8 +62,8 @@ void run_game(SDL_Window *window , SDL_Renderer *renderer , Sound &wall_destroy 
     SDL_Texture* Bullet_one   = SDL_CreateTextureFromSurface(renderer,bullet_one);
     SDL_Texture* Bullet_two   = SDL_CreateTextureFromSurface(renderer,bullet_two);
 
-    TTF_Font* font = TTF_OpenFont("Font/OpenSans.ttf", 22);
-    TTF_Font* font_end = TTF_OpenFont("Font/OpenSans.ttf", 40);
+    TTF_Font* font = TTF_OpenFont("font/OpenSans.ttf", 22);
+    TTF_Font* font_end = TTF_OpenFont("font/OpenSans.ttf", 40);
 
     int window_w , window_h;
     SDL_SetWindowSize(window,1320,760); // thay đổi kích thước của sổ

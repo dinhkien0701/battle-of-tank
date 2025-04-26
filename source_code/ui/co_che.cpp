@@ -18,15 +18,15 @@ using namespace std;
 std::atomic<bool> running(true);  // Kiểm soát vòng lặp , đảm bao gpu hoạt động trơn chu
 
 int read_high_point(){
-    ifstream file("C:/SDL2_Game/Point/high_point.txt");
+    ifstream file("point/high_point.txt");
     int number ;
-    file>>number;
+    if(!(file>>number))number = 0;
     file.close();
     return number ;
 }
 
 void write_point(int point){
-    ofstream file("C:/SDL2_Game/Point/high_point.txt", std::ios::trunc); // mở file ở chế độ ghi , xóa hết nội dung trong file
+    ofstream file("point/high_point.txt", std::ios::trunc); // mở file ở chế độ ghi , xóa hết nội dung trong file
     file<<point;
     file.close();
 }
