@@ -6,8 +6,8 @@
 
 ## Hướng dẫn cài đặt game 
 ### [Truy cập vào Releases để tải game ](https://github.com/dinhkien0701/battle-of-tank/releases)
-  *Ta có 3 lựa chọn
-   **BattleOfTank_Setup.exe :
+*Ta có 3 lựa chọn
+**BattleOfTank_Setup.exe :
 
 ## Hướng dẫn chơi game
 * Mỗi người chơi sẽ bắt đầu với 3 mạng , việc vượt qua mỗi level sẽ giúp người chơi  tăng thêm một mạng 
