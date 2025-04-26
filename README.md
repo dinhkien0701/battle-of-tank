@@ -29,7 +29,9 @@
 ## Đối tượng
 ### [Cấu trúc của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
 1. Nhân vật (Xe tăng người chơi)
-* Nhân vật trong trò chơi được định danh thông qua id và được khởi tạo với thuộc tính attribute = 2 để phân biệt nó với các đối tượng khác. Ngoài ra:
+* Nhân vật trong trò chơi được định danh thông qua id
+  
+* [attribute = 2] : đây là thuộc tính được khởi tạo để phân biệt nó với các đối tượng khác
 
 * [angle]: Xe tăng luôn bắt đầu ở hướng 270 độ (hướng Bắc), xác định góc mà xe tăng di chuyển hoặc bắn.
 
@@ -39,4 +41,13 @@
 
 * [Vị trí (rect)]: Được lưu trữ trong một hình chữ nhật SDL (SDL_Rect), đại diện cho tọa độ và kích thước trên màn hình.
 
+2. Địch (Xe tăng địch) :Đối với xe tăng địch, OBJ thêm vào các hành vi độc đáo và thông minh:
+
+* [attribute = 1] : Định danh đây là một đối tượng địch.
+
+* [rand_shot] : Cơ chế bắn ngẫu nhiên được khởi tạo, với thời gian bắn định kỳ mỗi 2 giây, tạo nên sự bất ngờ và thách thức.
+
+* [Hướng di chuyển - angle ] : Địch được khởi tạo với góc 270 độ và thời gian thay đổi hướng thông qua clock, sinh ngẫu nhiên để đảm bảo hành động linh hoạt.
+
+* [Vị trí (rect)] : Tọa độ và kích thước của địch được định nghĩa giúp dễ dàng hiển thị và kiểm tra va chạm với các đối tượng khác.
 
