@@ -21,4 +21,14 @@
 * Bị đạn địch trúng sẽ mất một mạng , khi số mạng về 0 sẽ coi như kết thúc ván đấu
 * Đạn của nhân vật trúng địch sẽ  tiêu diệt kẻ địch đó , các bức tường chịu tối đa 3 lần trúng đạn , sau khi trúng đạn lần thứ 3 tường sẽ sập!
 
+# Nội dung chính
+
+- [Cơ chế](#cơ-chế)
+- [Luật chơi](#luật-chơi)
+
+## Cơ chế
+Đây là nội dung của mục Cơ chế.
+
+## Luật chơi
+Đây là nội dung của mục Luật chơi.
 
