@@ -4,9 +4,10 @@
 ## Giới thiệu
  Tựa game 2D đơn giản , người chơi sẽ điều khiển xe tăng để tiêu diệt xe tăng địch nhằm đạt điểm cao nhất có thể
 
-## Hướng dẫn cài đặt game * [Truy cập vào Releases ](https://github.com/dinhkien0701/battle-of-tank/releases)
+## Hướng dẫn cài đặt game 
+* [Truy cập vào Releases để tải game ](https://github.com/dinhkien0701/battle-of-tank/releases)
    Ta có 3 lựa chọn
-   **BattleOfTank_Setup.exe :
+   BattleOfTank_Setup.exe :
 
 ## Hướng dẫn chơi game
 * Mỗi người chơi sẽ bắt đầu với 3 mạng , việc vượt qua mỗi level sẽ giúp người chơi  tăng thêm một mạng 
