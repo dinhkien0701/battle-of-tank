@@ -1,4 +1,6 @@
-﻿Mỗi người chơi sẽ bắt đầu với 3 mạng , việc vượt qua mỗi level sẽ giúp người chơi  tăng thêm một mạng 
+# Tank Of Battle
+ 
+ Mỗi người chơi sẽ bắt đầu với 3 mạng , việc vượt qua mỗi level sẽ giúp người chơi  tăng thêm một mạng 
 Người chơi có thể điều khiển di chuyển theo bốn hướng  W(lên) , S (xuống) , A(trái) , D(phải) để di chuyển ( có thể dùng phím mũi tên để di chuyển )
 Sử dụng phím SPACE để  bắn đạn tấn công địch
 Nhấn phím P để  TẠM DỪNG / TIẾP TỤC chơi game 
