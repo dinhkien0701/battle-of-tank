@@ -51,3 +51,13 @@
 
 * [Vị trí (rect)] : Tọa độ và kích thước của địch được định nghĩa giúp dễ dàng hiển thị và kiểm tra va chạm với các đối tượng khác.
 
+3. Vật cản (Tường) :Tường đóng vai trò như chướng ngại vật trong trò chơi
+
+* [attribute = 3]: Thuộc tính xác định đây là tường.
+
+* [defense] : Tường bắt đầu với giáp là 3, yêu cầu người chơi hoặc địch phải phá hủy để di chuyển qua.
+
+* [rect] : Định nghĩa vị trí và kích thước của tường trên màn hình.
+
+* => Vai trò: Tường thêm chiều sâu chiến thuật bằng cách cản trở di chuyển của các đối tượng.
+
