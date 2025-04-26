@@ -28,7 +28,8 @@
 
 ## Đối tượng
 ### [Cấu trúc của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
-1. Nhân vật (Xe tăng người chơi)
+
+1. [Nhân vật (Xe tăng người chơi)](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L23-L30)
 * Nhân vật trong trò chơi được định danh thông qua id
   
 * [attribute = 2] : đây là thuộc tính được khởi tạo để phân biệt nó với các đối tượng khác
@@ -41,7 +42,7 @@
 
 * [Vị trí (rect)]: Được lưu trữ trong một hình chữ nhật SDL (SDL_Rect), đại diện cho tọa độ và kích thước trên màn hình.
 
-2. Địch (Xe tăng địch) :Đối với xe tăng địch, OBJ thêm vào các hành vi độc đáo và thông minh:
+2. [Địch (Xe tăng địch)](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L31-L43) :Đối với xe tăng địch, OBJ thêm vào các hành vi độc đáo và thông minh:
 
 * [attribute = 1] : Định danh đây là một đối tượng địch.
 
@@ -51,7 +52,7 @@
 
 * [Vị trí (rect)] : Tọa độ và kích thước của địch được định nghĩa giúp dễ dàng hiển thị và kiểm tra va chạm với các đối tượng khác.
 
-3. Vật cản (Tường) :Tường đóng vai trò như chướng ngại vật trong trò chơi
+3. [Vật cản (Tường)](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L45-L53) :Tường đóng vai trò như chướng ngại vật trong trò chơi
 
 * [attribute = 3]: Thuộc tính xác định đây là tường.
 
@@ -61,3 +62,18 @@
 
 * => Vai trò: Tường thêm chiều sâu chiến thuật bằng cách cản trở di chuyển của các đối tượng.
 
+4. [Đạn](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L54-L79)  ( Đạn được sinh ra từ cả nhân vật và địch để tạo ra hành động )
+
+* [rect]  : Kích thước nhỏ gọn (10x10) và tọa độ khởi tạo dựa trên vị trí và góc của đối tượng bắn.
+
+* [angle] : Hướng của viên đạn phụ thuộc hoàn toàn vào góc bắn của đối tượng tạo ra nó.
+
+* [attribute] : Loại đạn được liên kết với loại đối tượng (ví dụ: đạn của địch khác với đạn của người chơi) .
+
+5. [Các chức năng hỗ trợ](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L81-L103)
+   
+* [xoa_obj()] : Xóa đối tượng khỏi trò chơi bằng cách đặt id = -1, biểu thị rằng đối tượng đã bị loại bỏ ( gần như không dùng :]] )
+
+* [tiep_xuc()] : Kiểm tra va chạm giữa hai đối tượng, từ xe tăng chạm vào tường cho đến đạn chạm vào địch.
+
+* [print_obj()] : Hiển thị đối tượng lên màn hình với góc xoay và vị trí chính xác.
