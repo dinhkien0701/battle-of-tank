@@ -1,5 +1,5 @@
 # Tank Of Battle
- * Link demo game :https://youtu.be/O7SRxKcHyDo?feature=shared
+ * Link demo game [:https://youtu.be/O7SRxKcHyDo?feature=shared](https://youtu.be/RpylNoM0pgg)
 ## Hướng dẫn cài đặt game 
 ### [Truy cập vào `Releases` để tải game ](https://github.com/dinhkien0701/battle-of-tank/releases)
 
