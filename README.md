@@ -85,12 +85,57 @@
 
 **Các bước tạo bản đồ bao gồm trong hàm `map_khoi_dong` :**
 - **Cấp thấp (Level < 3):** Vị trí nhân vật chính và địch được định nghĩa cụ thể. Tường được đặt tại các vị trí cố định, dễ dàng cho người chơi làm quen.
-- **Cấp độ cao (Level ≥ 4):** Vị trí nhân vật chính và địch được sinh ngẫu nhiên, đảm bảo sự đa dạng. Tường được khởi tạo với số lượng tăng theo level, tối đa 260 bức.
-- **Game coi như một game vô hạn cấp độ**
-#### Phân bố đối tượng ngẫu nhiên:
-Hàm `dfs_map` được sử dụng để sinh các bức tường một cách ngẫu nhiên, đảm bảo tính chiến thuật và thử thách khi di chuyển. Cơ chế này giúp bản đồ trở nên sống động và không lặp lại.
+- **Cấp độ cao (Level ≥ 4):** Vị trí nhân vật chính và địch được sinh ngẫu nhiên, đảm bảo sự đa dạng. Tường được khởi tạo với số lượng tăng theo level, tối đa 260 bức tường và tối đa 30 kẻ địch.
+- **Game coi như một game vô hạn cấp độ mục tiêu tiêu diệt càng nhiều càng tốt xe tăng địch**
+  
+#### **[Hàm `dfs_map` - Sinh các bức tường ngẫu nhiên](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.cpp#L38-L50)**
 
-- **Logic kiểm tra khoảng cách:** Đảm bảo nhân vật chính và địch không bị khởi tạo quá gần nhau, giúp người chơi có không gian để di chuyển và chiến đấu.
+Hàm `dfs_map` đảm nhận nhiệm vụ sinh các bức tường trong bản đồ một cách ngẫu nhiên, đảm bảo mỗi màn chơi đều mang lại sự mới mẻ và thử thách. Dưới đây là chi tiết từng bước hoạt động của hàm:
+
+1. **Đánh dấu ô hiện tại là tường:**
+   - Khi hàm được gọi tại vị trí `(i, j)`, ô đó sẽ được đánh dấu là tường:
+     ```cpp
+     map_of_level[i][j] = 1; // Đánh dấu ô hiện tại là tường (1).
+     ```
+
+2. **Sinh số nhánh mở rộng ngẫu nhiên:**
+   - Hàm sinh từ 1 đến 3 nhánh ngẫu nhiên từ ô hiện tại, sử dụng công thức:
+     ```cpp
+     for (int num = rand() % 3 + 1; num > 0; num--) { ... }
+     ```
+
+3. **Kiểm tra điều kiện mở rộng:**
+   - Các điều kiện sau giúp kiểm soát logic mở rộng:
+     - **`res == 2`:** Giới hạn số nhánh tối đa từ mỗi ô là 2, tránh tạo cấu trúc tường quá phức tạp.
+     - **`total >= max_total`:** Ngừng tạo tường nếu tổng số đã đạt giới hạn tối đa.
+
+4. **Sinh bước dịch chuyển ngẫu nhiên:**
+   - Dịch chuyển sang các ô gần kề theo tọa độ `(x, y)` ngẫu nhiên:
+     ```cpp
+     int x = rand() % 2 - rand() % 2; // Dịch chuyển theo trục x (-1, 0, 1).
+     int y = rand() % 2 - rand() % 2; // Dịch chuyển theo trục y (-1, 0, 1).
+     ```
+
+5. **Kiểm tra hợp lệ:**
+   - Nếu ô mới nằm ngoài biên hoặc đã có tường, bỏ qua:
+     ```cpp
+     if (x < 0 || x > 32 || y < 1 || y > 18 || map_of_level[i + x][j + y]) continue;
+     ```
+
+6. **Gọi đệ quy:**
+   - Nếu hợp lệ, hàm được gọi lại để mở rộng cấu trúc tường:
+     ```cpp
+     dfs_map(i + x, j + y, map_of_level, ++total, max_total);
+     ```
+
+---
+
+#### **Logic kiểm tra khoảng cách:**
+
+Trong hàm `map_khoi_dong`, logic kiểm tra khoảng cách giữa nhân vật chính và địch được triển khai như sau:
+
+```cpp
+while (mapp[x][y] > 0 || sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y)) < 9);
 
 #### Gán đối tượng vào bản đồ:
 Sau khi bản đồ được tạo, các đối tượng (nhân vật, địch, và tường) được khởi tạo và thêm vào danh sách đối tượng tương ứng (`make_enemy`, `make_obj`). Điều này giúp dễ dàng quản lý và hiển thị các đối tượng trong màn chơi.
