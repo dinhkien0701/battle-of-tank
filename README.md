@@ -12,11 +12,11 @@
  
 ![Hình giới thiệu](image/loading.png)
 
-## Hướng dẫn chơi
+# Hướng dẫn chơi
 
 - [Hướng dẫn chơi game](#Hướng-dẫn-chơi-game)
 
-## Hình ảnh và âm thanh của game\
+# Hình ảnh và âm thanh của game
 
 - [Thông tin chi tiết hình ảnh và âm thanh của game](#Thông-tin-chi-tiết-hình-ảnh-và-âm-thanh-của-game)
   
@@ -27,6 +27,9 @@
 - [Điều khiển](#Điều-khiển)
 - [Xây dựng màn chơi](#Xây-dựng-màn-chơi)
 - [Simple AI - Xây dựng AI đơn giản cho game](#Simple-AI---Xây-dựng-AI-đơn-giản-cho-game)
+---
+
+
 ---
 ## Hướng dẫn chơi game
 * Nhấp chuột nút `play` trên màn hình MENU để chơi game hoặc nhấn các nút `ĐIỂM CAO` hay `HƯỚNG DẪN` để dùng chức năng khác
