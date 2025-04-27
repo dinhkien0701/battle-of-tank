@@ -73,11 +73,11 @@
 
 * Âm thanh tải trên mạng internet : youtube.com và tiengdong.com
 * Hình ảnh cắt từ game , tự vẽ , tải trên mạng và sử dụng AI tạo ảnh
-- [**File âm thanh của game**](music)
-- [**File hình ảnh của game**](image)
+### [**File âm thanh của game**](music)
+### [**File hình ảnh của game**](image)
 
 ### Giới thiệu các hình ảnh
-     
+ - Hình ảnh xe tăng của người chơi (player / nhân vật ) ![Hình giới thiệu](image/xe.png) và  ![Hình giới thiệu](image/dan_do.png)
 
 ---
 # Cơ chế của game
