@@ -34,23 +34,41 @@
 ## Hướng dẫn chơi game
 * Nhấp chuột nút `play` trên màn hình MENU để chơi game hoặc nhấn các nút `ĐIỂM CAO` hay `HƯỚNG DẪN` để dùng chức năng khác
   
-  
-  ![Hình giới thiệu](image/img_1.png)
+---  
+  ![Hình giới thiệu](image/img_2.png)
+
+---
+  ![Hình giới thiệu](image/img_4.png)
+
+---
+  ![Hình giới thiệu](image/img_3.png)
 
   
 * Mỗi người chơi sẽ bắt đầu với 3 mạng , việc vượt qua mỗi level sẽ giúp người chơi  tăng thêm một mạng
 * Người chơi có thể điều khiển di chuyển theo bốn hướng  W(lên) , S (xuống) , A(trái) , D(phải) để di chuyển ( có thể dùng phím mũi tên để di chuyển )
 * Sử dụng phím SPACE để  bắn đạn tấn công địch
-   //hình ảnh
-  //hình ảnh
+  
+    ![Hình giới thiệu](image/img_5.png)
+  
+  ---
+    ![Hình giới thiệu](image/img_6.png)
+
+
 * Nhấn phím P để  TẠM DỪNG / TIẾP TỤC chơi game
-  //hình ảnh
+
+  ---
+   ![Hình giới thiệu](image/img_8.png)
+
 * Nhấn phím M để thoát khỏi ván đấu , trở về màn hình  MENU
  ### Cách thức tấn công
 * Bị đạn địch trúng sẽ mất một mạng , khi số mạng về 0 sẽ coi như kết thúc ván đấu
 * Đạn của nhân vật trúng địch sẽ  tiêu diệt kẻ địch đó , các bức tường chịu tối đa 3 lần trúng đạn , sau khi trúng đạn lần thứ 3 tường sẽ sập!
-  //hình ảnh
+
+  ---
+  ![Hình giới thiệu](image/img_7.png)
+  
 ---
+
 ## Thông tin chi tiết hình ảnh và âm thanh của game
 
 * Âm thanh tải trên mạng internet : youtube.com và tiengdong.com
