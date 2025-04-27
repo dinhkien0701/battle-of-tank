@@ -153,12 +153,12 @@ Sau khi bản đồ được tạo, các đối tượng (nhân vật, địch, 
 
 ### [Tương tác của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp)
 
-#### **1. Hàm `kiem_tra_va_cham`**
+#### **[1. Hàm `kiem_tra_va_cham`](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L72-L199)**
 
 Hàm này kiểm tra va chạm của một đối tượng `obj` với các đối tượng khác như nhân vật chính, kẻ địch, và tường trong bản đồ. Đây là logic quan trọng để đảm bảo các hành động trong game diễn ra chính xác.
 
 **Cách hoạt động:**
-1. **Kiểm tra giới hạn màn hình:**
+1.1. **Kiểm tra giới hạn màn hình:**
    - Nếu đối tượng `obj` vượt ra khỏi giới hạn màn hình, hàm sẽ trả về `true` (đã va chạm).
      ```cpp
      if(x<0 || x+w>1320 || y<40 || y+h>760) {
@@ -166,7 +166,7 @@ Hàm này kiểm tra va chạm của một đối tượng `obj` với các đ�
      }
      ```
 
-2. **Chuyển đổi tọa độ sang lưới bản đồ:**
+1.2. **Chuyển đổi tọa độ sang lưới bản đồ:**
    - Tọa độ của đối tượng được quy đổi sang ô lưới (`40x40`) trên bản đồ.
      ```cpp
      w = (x + w - 1) / 40;
@@ -175,7 +175,7 @@ Hàm này kiểm tra va chạm của một đối tượng `obj` với các đ�
      y /= 40;
      ```
 
-3. **Kiểm tra va chạm với tường:**
+1.3. **Kiểm tra va chạm với tường:**
    - Nếu bất kỳ ô nào trong lưới có giá trị `< 0` (tường), hàm trả về `true`.
      ```cpp
      if(bfs_map[x][y] < 0 || bfs_map[x][h] < 0 || bfs_map[w][y] < 0 || bfs_map[w][h] < 0) {
@@ -183,7 +183,7 @@ Hàm này kiểm tra va chạm của một đối tượng `obj` với các đ�
      }
      ```
 
-4. **Kiểm tra va chạm với nhân vật chính:**
+1.4. **Kiểm tra va chạm với nhân vật chính:**
    - Nếu `obj` không phải nhân vật chính, hàm kiểm tra va chạm trực tiếp bằng `tiep_xuc`.
      ```cpp
      if(obj.id != player.id) {
@@ -191,15 +191,15 @@ Hàm này kiểm tra va chạm của một đối tượng `obj` với các đ�
      }
      ```
 
-5. **Kiểm tra va chạm với kẻ địch:**
+1.5. **Kiểm tra va chạm với kẻ địch:**
    - Duyệt qua danh sách kẻ địch (`enemy_list`) để kiểm tra va chạm. Nếu `obj` chạm vào bất kỳ kẻ địch nào (trừ đối tượng đã bị loại bỏ `id = -1`), hàm trả về `true`.
 
-#### **2. Hàm `kiem_tra_duong_dan`**
+#### **[2. Hàm `kiem_tra_duong_dan`:](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L340-L385)**
 
 Hàm này kiểm tra đường đi của một đối tượng `obj` như đạn, bao gồm va chạm với tường, nhân vật chính, hoặc kẻ địch.
 
 **Cách hoạt động:**
-1. **Kiểm tra giới hạn màn hình:**
+2.1. **Kiểm tra giới hạn màn hình:**
    - Tương tự như hàm `kiem_tra_va_cham`, nếu đối tượng vượt khỏi giới hạn, trả về `true`.
      ```cpp
      if(x<0 || x+w>1320 || y<40 || y+h>760) {
@@ -207,7 +207,7 @@ Hàm này kiểm tra đường đi của một đối tượng `obj` như đạn
      }
      ```
 
-2. **Kiểm tra va chạm với tường:**
+2.2. **Kiểm tra va chạm với tường:**
    - Giảm `defense` của tường khi đạn va chạm vào. Nếu `defense` giảm về 0, tường sẽ bị phá hủy.
      ```cpp
      if(wall_map[x][y] > 0) {
@@ -216,7 +216,7 @@ Hàm này kiểm tra đường đi của một đối tượng `obj` như đạn
      }
      ```
 
-3. **Kiểm tra va chạm với nhân vật chính:**
+2.3. **Kiểm tra va chạm với nhân vật chính:**
    - Nếu đạn không cùng thuộc tính với nhân vật chính và xảy ra va chạm, `defense` của nhân vật giảm đi 1.
      ```cpp
      if(obj.attribute != player.attribute) {
@@ -227,7 +227,7 @@ Hàm này kiểm tra đường đi của một đối tượng `obj` như đạn
      }
      ```
 
-4. **Kiểm tra va chạm với kẻ địch:**
+2.4. **Kiểm tra va chạm với kẻ địch:**
    - Nếu đạn chạm vào kẻ địch có thuộc tính khác, kẻ địch sẽ bị xóa (`id = -2`) và trả về `true`.
      ```cpp
      if((enemy_list[i].attribute != obj.attribute) && obj.tiep_xuc(enemy_list[i])) {
@@ -236,12 +236,12 @@ Hàm này kiểm tra đường đi của một đối tượng `obj` như đạn
      }
      ```
 
-#### **3. Hàm `cham_tuong`**
+#### **[3. Hàm `cham_tuong`:](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L387-L389)**
 
 Hàm kiểm tra xem một tọa độ `(x, y)` có chạm phải tường trong bản đồ BFS (`bfs_map`) hay không.
 
 **Cách hoạt động:**
-1. **Kiểm tra giá trị BFS:**
+**Kiểm tra giá trị BFS:**
    - Nếu giá trị tại vị trí `(x / 40, y / 40)` nhỏ hơn `0`, hàm trả về `true` (đã chạm tường).
      ```cpp
      return bfs_map[x / 40][y / 40] < 0;
