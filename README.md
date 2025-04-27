@@ -77,6 +77,7 @@
 ### [**File hình ảnh của game**](image)
 
 ### Giới thiệu các hình ảnh
+<img src="image/xe.png" alt="Xe tăng trong game" width="60" height="60">
  - Hình ảnh xe tăng của người chơi (player / nhân vật ) ![Hình giới thiệu](image/xe.png) và  ![Hình giới thiệu](image/dan_do.png)
 
 ---
