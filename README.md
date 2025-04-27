@@ -468,4 +468,87 @@ if(player.angle == 0) { // Hướng di chuyển sang phải.
 ---
 
 
+## Xây dựng màn chơi
+
+### 1. Mô hình màn chơi
+#### [Xem chi tiết ở source_code/ui/play.cpp](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/play.cpp)
+
+Hàm `run_game` chịu trách nhiệm điều khiển toàn bộ logic của màn chơi, từ khởi tạo đến kết thúc. Các thành phần chính bao gồm:
+
+- **Khởi tạo màn chơi:**  
+  + Tải các tài nguyên như hình ảnh (nền, xe tăng của người chơi, địch, tường, đạn) và chuyển đổi chúng thành `SDL_Texture` để vẽ lên màn hình.  
+  + Mở font chữ dùng cho HUD và banner.  
+  + Đặt cửa sổ game với kích thước cố định **1320x760** và căn giữa màn hình.  
+  + Khởi tạo các mảng lưu trữ trạng thái của tường và đường đi, ví dụ như `wall_map[45][25]` và `bfs_map[45][25]`.
+
+- **Xử lý sự kiện:**  
+  + Sử dụng `handleEvent` để nhận các thao tác từ người chơi như di chuyển (W, A, S, D hoặc mũi tên), bắn đạn (SPACE), tạm dừng (P) hay thoát (/quay lại menu bằng M).
+
+- **Cập nhật trạng thái:**  
+  + Cập nhật vị trí của nhân vật qua hàm `lua_chon` dựa theo các thao tác điều khiển và kiểm tra va chạm.  
+  + Xử lý AI của địch bằng hàm `Auto_ACT`, tạo các hành vi ngẫu nhiên và linh hoạt của xe tăng địch.  
+  + Quản lý đối tượng đạn: khởi tạo, cập nhật vị trí (với hàm `new_obj_location`), kiểm tra đường đi (với hàm `kiem_tra_duong_dan`), và hiển thị đạn.
+
+- **Hiển thị màn hình:**  
+  + Mỗi khung hình (frame) được vẽ lại bao gồm các thành phần:  
+    - **Nền:** hiển thị hình nền game.  
+    - **Nhân vật:** xe tăng của người chơi.  
+    - **Địch:** xe tăng của đối thủ.  
+    - **Vật cản (tường):** hiển thị các tường được khởi tạo.  
+    - **Đạn:** hiển thị đạn của cả người chơi và địch.  
+  + HUD và banner được vẽ để cung cấp thông tin về level, điểm số, điểm cao nhất và số mạng còn lại.
+
+- **Điều kiện kết thúc:**  
+  + Màn chơi kết thúc khi người chơi hết mạng (hiển thị “GAME OVER”) hoặc khi người chơi chọn thoát (bằng phím M).
+
+---
+
+### 2. Cơ chế lên level
+
+- **Tăng cấp độ:**  
+  Sau mỗi màn chơi, nếu người chơi tiêu diệt hết địch hiện hữu, trò chơi sẽ tăng lên cấp độ mới.  
+  + Số lượng địch và tường được sinh ra sẽ tăng theo độ khó của cấp độ.
+  + Người chơi thay đổi các thông số trên bản đồ, mang lại thử thách mới mẻ qua mỗi level.
+
+- **Phần thưởng:**  
+  + Người chơi được nhận thêm **1 mạng** sau mỗi màn chơi thành công.
+  + Điểm số được tính dựa trên số lượng địch tiêu diệt và cấp độ hiện tại, giúp người chơi có động lực cải thiện kỹ năng.
+
+- **Khởi tạo lại bản đồ:**  
+  + Hàm `map_khoi_dong` được gọi để tạo lại bản đồ mới cho từng level, với các vị trí nhân vật, địch và tường được xác định một cách ngẫu nhiên và cân bằng.
+
+---
+
+### 3. Sơ đồ logic màn chơi
+
+```plaintext
++--------------------+
+|   Khởi tạo màn chơi |
++--------------------+
+          |
+          v
++--------------------+
+| Xử lý sự kiện      |
+| (handleEvent)      |
++--------------------+
+          |
+          v
++--------------------+
+| Cập nhật trạng thái|
+| - Di chuyển nhân vật|
+| - AI của địch       |
+| - Xử lý đạn bắn     |
++--------------------+
+          |
+          v
++--------------------+
+|   Hiển thị màn hình |
++--------------------+
+          |
+          v
++--------------------+
+| Điều kiện kết thúc  |
+| - GAME OVER         |
+| - Lên level         |
++--------------------+
 
