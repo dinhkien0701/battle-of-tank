@@ -153,7 +153,7 @@ Sau khi bản đồ được tạo, các đối tượng (nhân vật, địch, 
 
 ### Tương tác của đối tượng 
 
-#### **[1. Hàm `kiem_tra_va_cham`](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L72-L199)**
+#### **[1. Hàm `kiem_tra_va_cham`](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L172-L199)**
 
 Hàm này kiểm tra va chạm của một đối tượng `obj` với các đối tượng khác như nhân vật chính, kẻ địch, và tường trong bản đồ. Đây là logic quan trọng để đảm bảo các hành động trong game diễn ra chính xác.
 
