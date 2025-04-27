@@ -72,21 +72,21 @@
 
 5. [Các chức năng hỗ trợ](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L81-L103)
    
-* [xoa_obj()] : Xóa đối tượng khỏi trò chơi bằng cách đặt id = -1, biểu thị rằng đối tượng đã bị loại bỏ ( gần như không dùng :]] )
+* `xoa_obj()` : Xóa đối tượng khỏi trò chơi bằng cách đặt id = -1, biểu thị rằng đối tượng đã bị loại bỏ ( gần như không dùng :]] )
 
-* [tiep_xuc()] : Kiểm tra va chạm giữa hai đối tượng, từ xe tăng chạm vào tường cho đến đạn chạm vào địch.
+* `tiep_xuc()` : Kiểm tra va chạm giữa hai đối tượng, từ xe tăng chạm vào tường cho đến đạn chạm vào địch.
 
-* [print_obj()] : Hiển thị đối tượng lên màn hình với góc xoay và vị trí chính xác.
+* `print_obj()` : Hiển thị đối tượng lên màn hình với góc xoay và vị trí chính xác.
 
 ### [Khởi tạo bản đồ đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.cpp#L34-L141)
 
 #### Xây dựng bản đồ ban đầu:
-Hàm `map_khoi_dong` đảm nhận việc tạo ra một bản đồ gồm các đối tượng như nhân vật chính, địch, và tường. Mỗi đối tượng được định vị theo level hiện tại, giúp game tăng độ khó theo thời gian.
+[Hàm `map_khoi_dong`](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.cpp#L51-L139) đảm nhận việc tạo ra một bản đồ gồm các đối tượng như nhân vật chính, địch, và tường. Mỗi đối tượng được định vị theo level hiện tại, giúp game tăng độ khó theo thời gian. 
 
-**Các bước tạo bản đồ bao gồm:**
+**Các bước tạo bản đồ bao gồm trong hàm `map_khoi_dong` :**
 - **Cấp thấp (Level < 3):** Vị trí nhân vật chính và địch được định nghĩa cụ thể. Tường được đặt tại các vị trí cố định, dễ dàng cho người chơi làm quen.
 - **Cấp độ cao (Level ≥ 4):** Vị trí nhân vật chính và địch được sinh ngẫu nhiên, đảm bảo sự đa dạng. Tường được khởi tạo với số lượng tăng theo level, tối đa 260 bức.
-
+- **Game coi như một game vô hạn cấp độ**
 #### Phân bố đối tượng ngẫu nhiên:
 Hàm `dfs_map` được sử dụng để sinh các bức tường một cách ngẫu nhiên, đảm bảo tính chiến thuật và thử thách khi di chuyển. Cơ chế này giúp bản đồ trở nên sống động và không lặp lại.
 
