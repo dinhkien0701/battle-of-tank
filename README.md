@@ -73,8 +73,8 @@
 
 * Âm thanh tải trên mạng internet : youtube.com và tiengdong.com
 * Hình ảnh cắt từ game , tự vẽ , tải trên mạng và sử dụng AI tạo ảnh
-- File âm thanh của game
-- File hình ảnh của game
+- [**File âm thanh của game**](music)
+- [**File hình ảnh của game**](image)
 
 ### Giới thiệu các hình ảnh
      
