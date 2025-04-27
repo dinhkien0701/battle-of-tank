@@ -25,6 +25,7 @@
 
 - [Đối tượng](#Đối-tượng)
 - [Tương tác của đối tượng ](#Tương-tác-của-đối-tượng )
+- [Điều khiển](#Điều_khiển)
 
 ## Đối tượng
 ### [Cấu trúc của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
@@ -262,4 +263,209 @@ Hàm kiểm tra xem một tọa độ `(x, y)` có chạm phải tường trong 
 3. **`cham_tuong`:**
    - Cung cấp một cách kiểm tra nhanh để xác định xem đối tượng có thể di chuyển vào một vị trí cụ thể hay không.
 
-Những hàm này là nền tảng cho cơ chế chiến đấu và tương tác trong **Tank Of Battle**, mang lại sự phức tạp và tính chiến thuật cao cho trò chơi. Bạn có thể thêm phần này trực tiếp vào GitHub của mình! 🚀🎮✨
+Những hàm này là nền tảng cho cơ chế chiến đấu và tương tác trong **Tank Of Battle**, mang lại sự phức tạp và tính chiến thuật cao cho trò chơi 🚀🎮✨
+
+
+## Điều khiển
+
+### **[Hàm kiểm tra Event (thao tác điều khiển đơn giản)](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L109-L166)**
+
+Hàm `handleEvent` chịu trách nhiệm xử lý các thao tác điều khiển trong trò chơi. Từ việc di chuyển nhân vật đến bắn đạn và tạm dừng, hàm này đảm bảo mỗi hành động của người chơi được phản hồi đúng cách.
+
+#### **Chi tiết hàm `handleEvent`:**
+
+1. **Xử lý sự kiện đóng cửa sổ:**
+   - Nhận yêu cầu đóng cửa sổ từ người chơi bằng cách lắng nghe `SDL_QUIT`.
+     ```cpp
+     case SDL_QUIT:
+         exit(0);
+         break;
+     ```
+
+2. **Xử lý sự kiện phím bấm:**
+   - Phím bấm điều khiển nhân vật:
+     - W / mũi tên lên: Di chuyển lên.
+     - S / mũi tên xuống: Di chuyển xuống.
+     - A / mũi tên trái: Di chuyển sang trái.
+     - D / mũi tên phải: Di chuyển sang phải.
+     ```cpp
+     case SDLK_w:
+         upy++;
+         break;
+     case SDLK_s:
+         upy--;
+         break;
+     case SDLK_a:
+         upx--;
+         break;
+     case SDLK_d:
+         upx++;
+         break;
+     ```
+
+   - SPACE: Bắn đạn.
+   - P: Tạm dừng hoặc tiếp tục trò chơi.
+   - M: Thoát màn chơi, trở về menu.
+     ```cpp
+     case SDLK_SPACE:
+         ban_dan = true;
+         break;
+     case SDLK_p:
+         pause = (!pause);
+         break;
+     case SDLK_m:
+         back_to_menu = true;
+         break;
+     ```
+
+3. **Xử lý sự kiện chuột:**
+   - Kiểm tra nếu chuột trái được nhấn để lấy vị trí `(x, y)` của điểm bấm.
+     ```cpp
+     case SDL_MOUSEBUTTONDOWN:
+         if(event.button.button == SDL_BUTTON_LEFT) {
+             mouse_left.first = event.button.x;
+             mouse_left.second = event.button.y;
+         }
+         break;
+     ```
+
+---
+
+### **Hàm điều khiển của người chơi**
+
+Hàm `lua_chon` được thiết kế để xử lý hành vi di chuyển của nhân vật chính (xe tăng người chơi) trong trò chơi, bao gồm việc thay đổi hướng và xử lý va chạm.
+
+#### **[Chi tiết hàm `lua_chon`:](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L391-L475)**
+
+1. **Xác định hướng di chuyển:**
+   - Dựa trên giá trị của `upx` (di chuyển ngang) và `upy` (di chuyển dọc), hướng di chuyển của nhân vật được xác định:
+     ```cpp
+     if(abs(upx) >= abs(upy)) {
+         if(upx > 0) player.angle = 0;
+         else if(upx < 0) player.angle = 180;
+     } else {
+         if(upy > 0) player.angle = 270;
+         else if(upy < 0) player.angle = 90;
+     }
+     ```
+
+2. **Kiểm tra va chạm trước khi di chuyển:**
+   - Tạo đối tượng thử nghiệm `player_test` để kiểm tra khả năng di chuyển vào vị trí mới:
+     ```cpp
+     new_obj_location(player_test.rect, player_test.angle, 4);
+     if(kiem_tra_va_cham(player_test, player_test, enemy_list, total_enemy, bfs_map) == false) {
+         player = player_test;
+     }
+     ```
+
+3. **Cơ chế trượt tường:**
+   - Nếu va chạm với tường, nhân vật sẽ "trượt" lên hoặc xuống để tránh đứng yên:
+     ```cpp
+     if(cham_tuong(w, y, bfs_map) ^ cham_tuong(w, h, bfs_map)) {
+         OBJ T1 = player;
+         OBJ T2 = player;
+         T1.rect.y -= 2;
+         T2.rect.y += 2;
+         if(cham_tuong(w, y, bfs_map) == false && kiem_tra_va_cham(T1, T1, enemy_list, total_enemy, bfs_map) == false) {
+             player = T1;
+         } else if(cham_tuong(w, h, bfs_map) == false && kiem_tra_va_cham(T2, T2, enemy_list, total_enemy, bfs_map) == false) {
+             player = T2;
+         }
+     }
+     ```
+
+4. **Đặt lại trạng thái di chuyển:**
+   - Sau khi xử lý, giá trị `upx` và `upy` được đặt lại về 0:
+     ```cpp
+     upx = upy = 0;
+     ```
+
+---
+
+### **Giới thiệu chung về hàm phản hồi điều khiển**
+
+- **`handleEvent`:** Đảm bảo mọi thao tác của người chơi (phím bấm, chuột) đều được phản hồi chính xác.
+- **`lua_chon`:** Tinh chỉnh di chuyển của nhân vật, đặc biệt là cơ chế trượt tường, tạo trải nghiệm di chuyển mượt mà và hợp lý.
+
+---
+
+### **Giải thích cơ chế mới đáng chú ý**
+
+#### **[Cơ chế trượt tường](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L407-L472)**
+
+Do kích thước mỗi ô pixel trong bản đồ là **40x40**, khi nhân vật chỉ va chạm nhẹ (1 pixel) vào tường, việc di chuyển sẽ bị ngăn lại, gây ra hiện tượng "đứng yên" không mong muốn mà mắt thường khó nhận biết. Để khắc phục vấn đề này, trò chơi đã tích hợp một **cơ chế trượt tường**, giúp nhân vật có thể linh hoạt điều chỉnh vị trí và tiếp tục di chuyển mà không bị kẹt.
+
+---
+
+### **Chi tiết hoạt động**
+
+1. **Xác định vị trí va chạm:**
+   - Trò chơi sử dụng các tọa độ của nhân vật (`x`, `y`, `w`, `h`) để xác định xem có va chạm với cạnh của tường hay không. Logic sử dụng phép XOR (`^`) để kiểm tra nếu **chỉ một cạnh va chạm**, cơ chế trượt sẽ được kích hoạt:
+     ```cpp
+     if(cham_tuong(w, y, bfs_map) ^ cham_tuong(w, h, bfs_map)) {
+         ...
+     }
+     ```
+
+2. **Tạo chuyển động trượt:**
+   - Khi va chạm được phát hiện, nhân vật sẽ được thử di chuyển lên hoặc xuống (hoặc trái hoặc phải tùy theo hướng va chạm). Hai đối tượng tạm thời `T1` và `T2` được tạo ra để kiểm tra vị trí mới:
+     ```cpp
+     OBJ T1 = player;
+     OBJ T2 = player;
+     T1.rect.y -= 2; // Thử di chuyển lên.
+     T2.rect.y += 2; // Thử di chuyển xuống.
+     ```
+
+3. **Kiểm tra tính hợp lệ của vị trí mới:**
+   - Mỗi vị trí mới (`T1` và `T2`) được kiểm tra bằng hàm `cham_tuong` và `kiem_tra_va_cham`. Nếu hợp lệ (không chạm tường hoặc đối tượng khác), nhân vật sẽ được chuyển đến vị trí đó:
+     ```cpp
+     if(cham_tuong(w, y, bfs_map) == false && kiem_tra_va_cham(T1, T1, enemy_list, total_enemy, bfs_map) == false) {
+         player = T1; // Trượt lên.
+     } else if(cham_tuong(w, h, bfs_map) == false && kiem_tra_va_cham(T2, T2, enemy_list, total_enemy, bfs_map) == false) {
+         player = T2; // Trượt xuống.
+     }
+     ```
+
+4. **Đồng nhất trên mọi hướng:**
+   - Cơ chế trượt tương tự cũng được áp dụng khi nhân vật di chuyển **trái**, **phải**, hoặc theo chiều dọc.
+
+---
+
+### **Ý nghĩa và tác động trong trò chơi**
+
+- **Mượt mà hơn:**
+  - Người chơi không gặp tình trạng nhân vật "đứng yên" khi chạm cạnh tường, mang lại cảm giác điều khiển mượt mà và tự nhiên.
+
+- **Hợp lý về vật lý:**
+  - Cơ chế mô phỏng cách các vật thể trong thế giới thực có xu hướng "lướt" qua các góc cạnh thay vì bị kẹt hoàn toàn.
+
+- **Cải thiện trải nghiệm:**
+  - Người chơi cảm nhận rõ sự tinh tế trong thiết kế điều khiển, giúp tăng cường sự thỏa mãn khi tham gia trò chơi.
+
+---
+
+### **Ví dụ minh họa từ mã nguồn**
+
+Dưới đây là đoạn mã minh họa việc kiểm tra và xử lý cơ chế trượt tường khi nhân vật di chuyển sang phải:
+
+```cpp
+if(player.angle == 0) { // Hướng di chuyển sang phải.
+    if(cham_tuong(w, y, bfs_map) ^ cham_tuong(w, h, bfs_map)) {
+        OBJ T1 = player; // Trường hợp trượt lên.
+        OBJ T2 = player; // Trường hợp trượt xuống.
+        T1.rect.y -= 2;
+        T2.rect.y += 2;
+
+        if(cham_tuong(w, y, bfs_map) == false && kiem_tra_va_cham(T1, T1, enemy_list, total_enemy, bfs_map) == false) {
+            player = T1;
+        } else if(cham_tuong(w, h, bfs_map) == false && kiem_tra_va_cham(T2, T2, enemy_list, total_enemy, bfs_map) == false) {
+            player = T2;
+        }
+    }
+}
+
+
+---
+
+
+
