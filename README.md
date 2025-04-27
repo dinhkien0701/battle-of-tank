@@ -65,7 +65,7 @@
 
 * Nhấn phím M để thoát khỏi ván đấu , trở về màn hình  MENU
  ### Cách thức tấn công
-* Bị đạn địch trúng sẽ mất một mạng , khi số mạng về 0 sẽ coi như kết thúc ván đấu
+* Bị đạn địch trúng sẽ mất một mạng `hearts` , khi số mạng về 0 sẽ coi như kết thúc ván đấu
 * Đạn của nhân vật trúng địch sẽ  tiêu diệt kẻ địch đó , các bức tường chịu tối đa 3 lần trúng đạn , sau khi trúng đạn lần thứ 3 tường sẽ sập!
 
   ---
