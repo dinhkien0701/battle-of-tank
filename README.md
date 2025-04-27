@@ -18,7 +18,7 @@
 
 # Hình ảnh, âm thanh và font chữ
 
-- [Thông tin chi tiết hình ảnh, âm thanh và cả font chữ của game](#Thông-tin-chi-tiết-hình-ảnh,-âm-thanh-và-cả-font-chữ-của-game)
+- [Thông tin chi tiết hình ảnh, âm thanh và cả font chữ của game](#Thông-tin-chi-tiết-hình-ảnh-âm-thanh-và-cả-font-chữ-của-game)
   
 # Cơ chế của game
 
