@@ -25,7 +25,7 @@
 
 - [Đối tượng](#Đối-tượng)
 - [Tương tác của đối tượng ](#Tương-tác-của-đối-tượng )
-- [Điều khiển](#Điều_khiển)
+- [Điều khiển](#Điều-khiển)
 
 ## Đối tượng
 ### [Cấu trúc của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
