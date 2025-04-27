@@ -151,7 +151,7 @@ Sau khi bản đồ được tạo, các đối tượng (nhân vật, địch, 
 - **Chiến thuật:** Tường được đặt thông minh để tạo thử thách, kết hợp với vị trí kẻ địch để người chơi phải suy nghĩ kỹ trước khi hành động.
 - **Hiệu quả:** Cách tổ chức mã nguồn giúp quản lý đối tượng dễ dàng, mở rộng logic cho các cấp độ khó hơn.
 
-### [Tương-tác-của-đối-tượng ](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp)
+### [Tương tác của đối tượng ](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp)
 
 #### **[1. Hàm `kiem_tra_va_cham`](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L72-L199)**
 
