@@ -38,9 +38,13 @@
   ![Hình giới thiệu](image/img_2.png)
 
 ---
+   Khi click `HƯỚNG DẪN`
+   
   ![Hình giới thiệu](image/img_4.png)
-
+  
 ---
+   Khi click `ĐIỂM CAO`
+   
   ![Hình giới thiệu](image/img_3.png)
 
   
