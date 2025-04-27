@@ -9,6 +9,7 @@
 
 ## Giới thiệu
  Tựa game 2D đơn giản , người chơi sẽ điều khiển xe tăng để tiêu diệt xe tăng địch nhằm đạt điểm cao nhất có thể
+ 
 ![Xe tăng trong game](image/loading.png)
 
 ## Hướng dẫn chơi
