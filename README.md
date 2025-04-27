@@ -551,4 +551,11 @@ Hàm `run_game` chịu trách nhiệm điều khiển toàn bộ logic của mà
 | - GAME OVER         |
 | - Lên level         |
 +--------------------+
+```
+---
+### 4. Ý nghĩa của mô hình màn chơi
+- **Đa dạng và ngẫu nhiên:** Mỗi màn chơi được khởi tạo với vị trí đối tượng ngẫu nhiên nhờ các hàm như map_khoi_dong và bfs_area, tạo ra trải nghiệm độc đáo và không lặp lại.
 
+- **Tăng độ khó:** Khi level tăng, số lượng địch và tường gia tăng, đòi hỏi người chơi phải đối mặt với thử thách và tinh chỉnh chiến lược.
+
+- **Trải nghiệm người dùng:** Việc hiển thị HUD và banner cung cấp thông tin kịp thời, giúp người chơi theo dõi điểm số, mạng và cấp độ một cách trực quan, đồng thời duy trì sự hấp dẫn khi tham gia trò chơi.
