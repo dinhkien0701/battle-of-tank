@@ -1,7 +1,7 @@
 # Tank Of Battle
  * Link demo game :
 ## Hướng dẫn cài đặt game 
-### [Truy cập vào Releases để tải game ](https://github.com/dinhkien0701/battle-of-tank/releases)
+### [Truy cập vào `**Releases**` để tải game ](https://github.com/dinhkien0701/battle-of-tank/releases)
 
 * BattleOfTank_Setup.exe : Tải game về cài đặt và chơi luôn
 * Source.Code.to.Build.App.zip : Phiên bản chứa cả file Setup để cài game kèm mã nguồn đã được thay đổi để có thể tạo ứng dụng hoàn chỉnh
