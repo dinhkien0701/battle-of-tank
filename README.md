@@ -78,10 +78,10 @@
 
 ### Giới thiệu các hình ảnh
 
- - Hình ảnh xe tăng của người chơi (player / nhân vật )  <img src="image/xe.png" alt="Xe tăng trong game" width="60" height="60">   và  đạn tương ứng với xe tăng này là <img src="image/dan_do.png" alt="Xe tăng trong game" width="20" height="20">
+ - Hình ảnh xe tăng của người chơi (player / nhân vật )  <img src="image/xe.png" alt="Xe tăng trong game" width="60" height="60">   và  đạn tương ứng với xe tăng này là    <img src="image/dan_do.png" alt="Xe tăng trong game" width="20" height="20">
 
 
- - Hình ảnh xe tăng của địch ( enemy )  <img src="image/xe_dich.png" alt="Xe tăng trong game" width="60" height="60">   và  đạn tương ứng với xe tăng này là <img src="image/dan_den.png" alt="Xe tăng trong game" width="20" height="20">
+ - Hình ảnh xe tăng của địch ( enemy )  <img src="image/xe_dich.png" alt="Xe tăng trong game" width="60" height="60">   và  đạn tương ứng với xe tăng này là    <img src="image/dan_den.png" alt="Xe tăng trong game" width="20" height="20">
 
 ---
 # Cơ chế của game
