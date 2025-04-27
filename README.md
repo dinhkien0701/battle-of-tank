@@ -78,7 +78,7 @@
 
 * [print_obj()] : Hiển thị đối tượng lên màn hình với góc xoay và vị trí chính xác.
 
-### [Khởi tạo bản đồ đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.cpp)
+### [Khởi tạo bản đồ đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.cpp#L34-L141)
 
 #### Xây dựng bản đồ ban đầu:
 Hàm `map_khoi_dong` đảm nhận việc tạo ra một bản đồ gồm các đối tượng như nhân vật chính, địch, và tường. Mỗi đối tượng được định vị theo level hiện tại, giúp game tăng độ khó theo thời gian.
