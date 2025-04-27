@@ -16,9 +16,9 @@
 
 - [Hướng dẫn chơi game](#Hướng-dẫn-chơi-game)
 
-# Hình ảnh và âm thanh của game
+# Hình ảnh, âm thanh và font chữ
 
-- [Thông tin chi tiết hình ảnh và âm thanh của game](#Thông-tin-chi-tiết-hình-ảnh-và-âm-thanh-của-game)
+- [Thông tin chi tiết hình ảnh, âm thanh và cả font chữ của game](#Thông-tin-chi-tiết-hình-ảnh,-âm-thanh-va-ca-font-chu-của-game)
   
 # Cơ chế của game
 
@@ -69,20 +69,26 @@
   
 ---
 
-## Thông tin chi tiết hình ảnh và âm thanh của game
+## Thông tin chi tiết hình ảnh, âm thanh và cả font chữ của game
 
-* Âm thanh tải trên mạng internet : youtube.com và tiengdong.com
-* Hình ảnh cắt từ game , tự vẽ , tải trên mạng và sử dụng AI tạo ảnh
+* Âm thanh tải trên mạng internet : youtube.com và tiengdong.com.
+* Hình ảnh cắt từ game , tự vẽ , tải trên mạng và sử dụng AI tạo ảnh.
+* Font chữ tải xuống từ Google Font.
 ### [**File âm thanh của game**](music)
 ### [**File hình ảnh của game**](image)
+### [**File font chữ của game**](font)
 
-### Giới thiệu các hình ảnh
+### Giới thiệu các hình ảnh đối tượng trong game
 
  - Hình ảnh xe tăng của người chơi (player / nhân vật )  <img src="image/xe.png" alt="Xe tăng trong game" width="60" height="60">   và  đạn tương ứng với xe tăng này là    <img src="image/dan_do.png" alt="Xe tăng trong game" width="20" height="20">
 
 
  - Hình ảnh xe tăng của địch ( enemy )  <img src="image/xe_dich.png" alt="Xe tăng trong game" width="60" height="60">   và  đạn tương ứng với xe tăng này là    <img src="image/dan_den.png" alt="Xe tăng trong game" width="20" height="20">
+ 
 
+ - Hình ảnh bức tường ( wall / vật cản )   <img src="image/tuong.png" alt="Xe tăng trong game" width="60" height="60">
+
+ 
 ---
 # Cơ chế của game
 ---
