@@ -24,7 +24,7 @@
 # Cơ chế của game
 
 - [Đối tượng](#Đối-tượng)
-- [Luật chơi](#luật-chơi)
+- [Tương tác của đối tượng ](#Tương-tác-của-đối-tượng )
 
 ## Đối tượng
 ### [Cấu trúc của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
@@ -151,3 +151,115 @@ Sau khi bản đồ được tạo, các đối tượng (nhân vật, địch, 
 - **Chiến thuật:** Tường được đặt thông minh để tạo thử thách, kết hợp với vị trí kẻ địch để người chơi phải suy nghĩ kỹ trước khi hành động.
 - **Hiệu quả:** Cách tổ chức mã nguồn giúp quản lý đối tượng dễ dàng, mở rộng logic cho các cấp độ khó hơn.
 
+### [Tương tác của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp)
+
+#### **1. Hàm `kiem_tra_va_cham`**
+
+Hàm này kiểm tra va chạm của một đối tượng `obj` với các đối tượng khác như nhân vật chính, kẻ địch, và tường trong bản đồ. Đây là logic quan trọng để đảm bảo các hành động trong game diễn ra chính xác.
+
+**Cách hoạt động:**
+1. **Kiểm tra giới hạn màn hình:**
+   - Nếu đối tượng `obj` vượt ra khỏi giới hạn màn hình, hàm sẽ trả về `true` (đã va chạm).
+     ```cpp
+     if(x<0 || x+w>1320 || y<40 || y+h>760) {
+         return true;
+     }
+     ```
+
+2. **Chuyển đổi tọa độ sang lưới bản đồ:**
+   - Tọa độ của đối tượng được quy đổi sang ô lưới (`40x40`) trên bản đồ.
+     ```cpp
+     w = (x + w - 1) / 40;
+     h = (y + h - 1) / 40;
+     x /= 40; 
+     y /= 40;
+     ```
+
+3. **Kiểm tra va chạm với tường:**
+   - Nếu bất kỳ ô nào trong lưới có giá trị `< 0` (tường), hàm trả về `true`.
+     ```cpp
+     if(bfs_map[x][y] < 0 || bfs_map[x][h] < 0 || bfs_map[w][y] < 0 || bfs_map[w][h] < 0) {
+         return true;
+     }
+     ```
+
+4. **Kiểm tra va chạm với nhân vật chính:**
+   - Nếu `obj` không phải nhân vật chính, hàm kiểm tra va chạm trực tiếp bằng `tiep_xuc`.
+     ```cpp
+     if(obj.id != player.id) {
+         if(obj.tiep_xuc(player)) return true;
+     }
+     ```
+
+5. **Kiểm tra va chạm với kẻ địch:**
+   - Duyệt qua danh sách kẻ địch (`enemy_list`) để kiểm tra va chạm. Nếu `obj` chạm vào bất kỳ kẻ địch nào (trừ đối tượng đã bị loại bỏ `id = -1`), hàm trả về `true`.
+
+#### **2. Hàm `kiem_tra_duong_dan`**
+
+Hàm này kiểm tra đường đi của một đối tượng `obj` như đạn, bao gồm va chạm với tường, nhân vật chính, hoặc kẻ địch.
+
+**Cách hoạt động:**
+1. **Kiểm tra giới hạn màn hình:**
+   - Tương tự như hàm `kiem_tra_va_cham`, nếu đối tượng vượt khỏi giới hạn, trả về `true`.
+     ```cpp
+     if(x<0 || x+w>1320 || y<40 || y+h>760) {
+         return true;
+     }
+     ```
+
+2. **Kiểm tra va chạm với tường:**
+   - Giảm `defense` của tường khi đạn va chạm vào. Nếu `defense` giảm về 0, tường sẽ bị phá hủy.
+     ```cpp
+     if(wall_map[x][y] > 0) {
+         ans = true;
+         wall_list[wall_map[x][y]].defense -= 1;
+     }
+     ```
+
+3. **Kiểm tra va chạm với nhân vật chính:**
+   - Nếu đạn không cùng thuộc tính với nhân vật chính và xảy ra va chạm, `defense` của nhân vật giảm đi 1.
+     ```cpp
+     if(obj.attribute != player.attribute) {
+         if(obj.tiep_xuc(player)) {
+             ans = true;
+             player.defense -= 1;
+         }
+     }
+     ```
+
+4. **Kiểm tra va chạm với kẻ địch:**
+   - Nếu đạn chạm vào kẻ địch có thuộc tính khác, kẻ địch sẽ bị xóa (`id = -2`) và trả về `true`.
+     ```cpp
+     if((enemy_list[i].attribute != obj.attribute) && obj.tiep_xuc(enemy_list[i])) {
+         enemy_list[i].id = -2;
+         ans = true;
+     }
+     ```
+
+#### **3. Hàm `cham_tuong`**
+
+Hàm kiểm tra xem một tọa độ `(x, y)` có chạm phải tường trong bản đồ BFS (`bfs_map`) hay không.
+
+**Cách hoạt động:**
+1. **Kiểm tra giá trị BFS:**
+   - Nếu giá trị tại vị trí `(x / 40, y / 40)` nhỏ hơn `0`, hàm trả về `true` (đã chạm tường).
+     ```cpp
+     return bfs_map[x / 40][y / 40] < 0;
+     ```
+
+---
+
+### **Ý nghĩa và vai trò của các hàm:**
+
+1. **`kiem_tra_va_cham`:**
+   - Đảm bảo các đối tượng trong game không vượt giới hạn hoặc va chạm không mong muốn. 
+   - Quản lý trạng thái của đối tượng, ví dụ như loại bỏ địch khi có va chạm.
+
+2. **`kiem_tra_duong_dan`:**
+   - Làm rõ cách các vật thể di chuyển và tương tác (đạn, tường, nhân vật). 
+   - Tạo cơ chế phá hủy tường và giảm mạng khi bị bắn trúng.
+
+3. **`cham_tuong`:**
+   - Cung cấp một cách kiểm tra nhanh để xác định xem đối tượng có thể di chuyển vào một vị trí cụ thể hay không.
+
+Những hàm này là nền tảng cho cơ chế chiến đấu và tương tác trong **Tank Of Battle**, mang lại sự phức tạp và tính chiến thuật cao cho trò chơi. Bạn có thể thêm phần này trực tiếp vào GitHub của mình! 🚀🎮✨
