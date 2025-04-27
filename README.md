@@ -26,6 +26,8 @@
 - [Đối tượng](#Đối-tượng)
 - [Tương tác của đối tượng ](#Tương-tác-của-đối-tượng )
 - [Điều khiển](#Điều-khiển)
+- [Xây dựng màn chơi](#Xây-dựng-màn-chơi)
+- [Simple AI - Xây dựng AI đơn giản cho game](#Simple-AI---Xây-dựng-AI-đơn-giản-cho-game)
 
 ## Đối tượng
 ### [Cấu trúc của đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.h#L9-L103)
@@ -559,3 +561,145 @@ Hàm `run_game` chịu trách nhiệm điều khiển toàn bộ logic của mà
 - **Tăng độ khó:** Khi level tăng, số lượng địch và tường gia tăng, đòi hỏi người chơi phải đối mặt với thử thách và tinh chỉnh chiến lược.
 
 - **Trải nghiệm người dùng:** Việc hiển thị HUD và banner cung cấp thông tin kịp thời, giúp người chơi theo dõi điểm số, mạng và cấp độ một cách trực quan, đồng thời duy trì sự hấp dẫn khi tham gia trò chơi.
+
+---
+
+## Simple AI - Xây dựng AI đơn giản cho game
+
+[Hàm `Auto_ACT` là trung tâm của hệ thống trí tuệ nhân tạo (AI) trong trò chơi **Tank Of Battle**, chịu trách nhiệm điều khiển hành vi của địch, bao gồm di chuyển và bắn đạn. Hàm này mô phỏng một AI đơn giản nhưng hiệu quả, dựa trên khoảng cách đến người chơi, logic bám đuổi, và ngẫu nhiên hóa hành vi.](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L202-L338)
+
+---
+
+### **[Chi tiết hoạt động của hàm `Auto_ACT`](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L202-L338)**
+
+### **1. Thay đổi hướng di chuyển ngẫu nhiên**
+- Mỗi khi `clock == 90`, địch sẽ thay đổi hướng di chuyển bằng cách chọn ngẫu nhiên trong các góc 0°, 90°, 180°, 270°.  
+- Giá trị của `clock` sau đó được đặt lại với một số ngẫu nhiên từ 0 đến 19 để tránh sự lặp lại thường xuyên.
+
+```cpp
+if (enemy.clock == 90) {
+    srand(enemy.rect.x * enemy.rect.y + enemy.angle + time(0));
+    enemy.angle = 90 * (rand() % 4);
+    enemy.clock = rand() % 20;
+}
+enemy.clock++;
+```
+---
+### **2. Quyết định bắn đạn** 
+- Địch sẽ quyết định bắn đạn dựa vào:
+
+- Tần suất: Địch chỉ bắn nếu `rand_shot` khớp với giá trị `fps`.
+
+- Cấp độ: Ở `level` thấp hơn `(level < 3)`, khả năng bắn đạn được giảm để giúp người chơi làm quen. Ở các cấp độ cao hơn, địch sẽ bắn đạn thường xuyên hơn.
+
+```cpp
+if (enemy.rand_shot == fps) {
+    if (level < 3) {
+        srand(enemy.rect.x);
+        shot = static_cast<bool>(rand() % 2);
+    } else {
+        shot = true;
+    }
+}
+```
+---
+### 3. Tính khoảng cách và logic bám đuổi
+- Khoảng cách với người chơi: Địch sẽ phân tích khoảng cách giữa vị trí của mình và người chơi (dist) để quyết định hành vi. Địch sẽ căn cứ vào `level` càng cao và đặc biệt là khoảng
+cách `dist`  càng gần , sự đuổi theo càng quyết liệt
+
+- Dựa vào các công thức tính qua `level` , `dist` và sử dụng `random` để lấy giá trị ` int choose ` , nếu `choose > 7` địch sẽ đuổi theo
+
+- Logic kiểm tra: Dựa vào sự chênh lệch tọa độ giữa địch và người chơi (x, y), AI sẽ tính toán hướng di chuyển.
+
+
+```cpp
+// tạo hạt nhân cho random
+    srand( enemy.rect.x-enemy.rect.y + enemy.angle);
+
+    int choose = rand()%9 + min(2, level/3); // random lấy số để xác định có đuổi không (>7)
+
+    if(dist <= 150 + min(level*20,200)||choose >7){
+
+        // Hàm kiểm tra có bắn đạn không
+        if((enemy.rand_shot == fps)){
+            shot = true ;
+        }
+        if(dist< 70){
+            if((fps+30)%60 == enemy.rand_shot){
+                shot = true;
+            }
+        }
+
+         // tạo hạt nhân cho random
+         srand(enemy.rect.y);
+         //tiếp tục lấy số lần nữa
+         choose = choose/7*7 + rand()%10 + min(4,level/2) + max(0 ,3-dist/50) ; // random lấy số để xác định có đuổi không (>7)
+
+         if(choose > 7) {  Khi choose >7 kẻ địch thực hiện bám đuổi người chơi .... }
+```
+----
+
+### **4. Tìm đường tối ưu**
+- AI phân tích tất cả 4 hướng di chuyển (xoay 0°, 90°, 180°, 270°) để tìm hướng có giá trị tốt nhất dựa trên hàm `find_path`.
+
+ ```cpp
+int find_path( SDL_Rect &rect , int bfs_map[45][25]){
+    int ans =0;
+    if(rect.x <0 || rect.x +rect.w > 1320 || rect.y <40 ||rect.y+rect.h >760){
+        // trường hợp ngoài viền , loại bỏ luôn
+        return 100000000;
+    }
+    vector<int> rect_Rows ={rect.x/40 , (rect.x+rect.w-1)/40};
+    vector<int> rect_Cols ={rect.y/40 , (rect.y+rect.h-1)/40};
+    for(int X :rect_Rows){
+        for(int Y :rect_Cols){
+            ans += abs(bfs_map[X][Y]);
+        }
+    }
+    return ans ;
+}
+```
+
+
+- **Logic kiểm tra:** Nếu hướng được chọn có điểm số tốt hơn và không va chạm, AI sẽ cập nhật hướng và vị trí di chuyển.
+
+```cpp
+for (int i = 0; i < 4; i++) {
+    enemy_test = enemy;
+    enemy_test.angle = (enemy.angle + 90 * i) % 360;
+    new_obj_location(enemy_test.rect, enemy_test.angle, 2);
+
+    if (kiem_tra_va_cham(enemy_test, player, enemy_list, total_enemy, bfs_map) == false) {
+        enemy = enemy_test;
+        return shot;
+    }
+}
+```
+### 5. Điều chỉnh ở khoảng cách gần
+- Trong quá trình bám đuổi xe tăng địch xe ưu tiên giảm khoảng cách để tiếp cận mục tiêu là người chơi
+- Nếu khoảng cách giữa địch và người chơi nhỏ hơn `75 đến 95 pixel` tùy vào độ khó `level`, AI khi đó sẽ vô cùng thông minh ( càng gần người chơi càng thông minh ) khi
+đó địch sẽ ưu tiên làm sao chĩa nòng súng về người chơi để tiêu diệt
+
+```cpp
+if (max(abs(x), abs(y)) < 75 + min(20, level * 3)) {
+    if (abs(x) <= abs(y)) {
+        enemy_test = enemy;
+        enemy_test.rect.x += 2 * x / abs(x);
+        if (kiem_tra_va_cham(enemy_test, player, enemy_list, total_enemy, bfs_map) == false) {
+            pick_rect = enemy_test.rect;
+            if (x > 0) angle = 0;
+            else angle = 180;
+            break;
+        }
+    }
+    ...
+}
+```
+---
+### 6. Ý nghĩa của AI trong game
+
+- **Thách thức thông minh:** AI không chỉ bắn đạn, mà còn tự động điều chỉnh hướng di chuyển để tạo ra thử thách cho người chơi.
+
+- **Phản ứng theo cấp độ:** Tần suất bắn đạn và độ phức tạp trong hành vi của địch tăng lên khi level cao hơn, đảm bảo độ khó được duy trì.
+
+- **Hành vi ngẫu nhiên:** Logic random trong AI giúp hành vi của địch không dễ đoán, mang lại sự mới mẻ trong mỗi màn chơi.
