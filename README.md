@@ -77,3 +77,31 @@
 * [tiep_xuc()] : Kiểm tra va chạm giữa hai đối tượng, từ xe tăng chạm vào tường cho đến đạn chạm vào địch.
 
 * [print_obj()] : Hiển thị đối tượng lên màn hình với góc xoay và vị trí chính xác.
+
+### [Khởi tạo bản đồ đối tượng - xem code](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.cpp)
+
+#### Xây dựng bản đồ ban đầu:
+Hàm `map_khoi_dong` đảm nhận việc tạo ra một bản đồ gồm các đối tượng như nhân vật chính, địch, và tường. Mỗi đối tượng được định vị theo level hiện tại, giúp game tăng độ khó theo thời gian.
+
+**Các bước tạo bản đồ bao gồm:**
+- **Cấp thấp (Level < 3):** Vị trí nhân vật chính và địch được định nghĩa cụ thể. Tường được đặt tại các vị trí cố định, dễ dàng cho người chơi làm quen.
+- **Cấp độ cao (Level ≥ 4):** Vị trí nhân vật chính và địch được sinh ngẫu nhiên, đảm bảo sự đa dạng. Tường được khởi tạo với số lượng tăng theo level, tối đa 260 bức.
+
+#### Phân bố đối tượng ngẫu nhiên:
+Hàm `dfs_map` được sử dụng để sinh các bức tường một cách ngẫu nhiên, đảm bảo tính chiến thuật và thử thách khi di chuyển. Cơ chế này giúp bản đồ trở nên sống động và không lặp lại.
+
+- **Logic kiểm tra khoảng cách:** Đảm bảo nhân vật chính và địch không bị khởi tạo quá gần nhau, giúp người chơi có không gian để di chuyển và chiến đấu.
+
+#### Gán đối tượng vào bản đồ:
+Sau khi bản đồ được tạo, các đối tượng (nhân vật, địch, và tường) được khởi tạo và thêm vào danh sách đối tượng tương ứng (`make_enemy`, `make_obj`). Điều này giúp dễ dàng quản lý và hiển thị các đối tượng trong màn chơi.
+
+#### Vai trò và cơ chế nâng cấp:
+- **Nhân vật chính:** Luôn khởi đầu với góc 270 độ và được thưởng thêm mạng mỗi level.
+- **Địch:** Tăng số lượng và hành vi linh hoạt khi level cao.
+- **Tường:** Số lượng tường tăng theo level, đòi hỏi người chơi phải phá hủy để mở đường di chuyển.
+
+#### Điểm nổi bật của cơ chế khởi tạo:
+- **Sự ngẫu nhiên:** Mỗi màn chơi mang lại trải nghiệm mới, không lặp lại, giúp người chơi không nhàm chán.
+- **Chiến thuật:** Tường được đặt thông minh để tạo thử thách, kết hợp với vị trí kẻ địch để người chơi phải suy nghĩ kỹ trước khi hành động.
+- **Hiệu quả:** Cách tổ chức mã nguồn giúp quản lý đối tượng dễ dàng, mở rộng logic cho các cấp độ khó hơn.
+
