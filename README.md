@@ -136,8 +136,9 @@ Trong hàm `map_khoi_dong`, logic kiểm tra khoảng cách giữa nhân vật c
 
 ```cpp
 while (mapp[x][y] > 0 || sqrt((cx - x) * (cx - x) + (cy - y) * (cy - y)) < 9);
-
-#### Gán đối tượng vào bản đồ:
+```
+---
+#### [Gán đối tượng vào bản đồ:](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/co_che.cpp#L109-L139)
 Sau khi bản đồ được tạo, các đối tượng (nhân vật, địch, và tường) được khởi tạo và thêm vào danh sách đối tượng tương ứng (`make_enemy`, `make_obj`). Điều này giúp dễ dàng quản lý và hiển thị các đối tượng trong màn chơi.
 
 #### Vai trò và cơ chế nâng cấp:
