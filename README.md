@@ -10,7 +10,7 @@
 ## Giới thiệu
  Tựa game 2D đơn giản , người chơi sẽ điều khiển xe tăng để tiêu diệt xe tăng địch nhằm đạt điểm cao nhất có thể
  
-![Xe tăng trong game](image/loading.png)
+![Hình giới thiệu](image/loading.png)
 
 ## Hướng dẫn chơi
 
@@ -30,7 +30,11 @@
 ---
 ## Hướng dẫn chơi game
 * Nhấp chuột nút `play` trên màn hình MENU để chơi game hoặc nhấn các nút `ĐIỂM CAO` hay `HƯỚNG DẪN` để dùng chức năng khác
-  //Hình ảnh
+  
+  
+  ![Hình giới thiệu](image/img_1.png)
+
+  
 * Mỗi người chơi sẽ bắt đầu với 3 mạng , việc vượt qua mỗi level sẽ giúp người chơi  tăng thêm một mạng
 * Người chơi có thể điều khiển di chuyển theo bốn hướng  W(lên) , S (xuống) , A(trái) , D(phải) để di chuyển ( có thể dùng phím mũi tên để di chuyển )
 * Sử dụng phím SPACE để  bắn đạn tấn công địch
