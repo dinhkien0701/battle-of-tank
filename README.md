@@ -1,12 +1,16 @@
 # Tank Of Battle
- * Link demo game [:https://youtu.be/O7SRxKcHyDo?feature=shared](https://youtu.be/RpylNoM0pgg)
+ * Link demo code game [https://www.youtube.com/watch?v=7H3GkxuNnbE](https://www.youtube.com/watch?v=7H3GkxuNnbE)
+
+   ![Hình giới thiệu](image/loading.png)
+
+   
 ## Hướng dẫn cài đặt game 
 ### [Truy cập vào `Releases` để tải game ](https://github.com/dinhkien0701/battle-of-tank/releases)
 
 * BattleOfTank_Setup.exe : Tải game về cài đặt và chơi luôn
 * Source.Code.to.Build.App.zip : Phiên bản chứa cả file Setup để cài game kèm mã nguồn đã được thay đổi để có thể tạo ứng dụng hoàn chỉnh
 * Battle.Of.Tank.zip : phiên bản mã nguồn gốc của game , chưa tùy biến và có thể chơi 
-
+* Hướng dẫn tải/xóa game [:https://youtu.be/O7SRxKcHyDo?feature=shared](https://youtu.be/RpylNoM0pgg)
 ## Giới thiệu
  Tựa game 2D đơn giản , người chơi sẽ điều khiển xe tăng để tiêu diệt xe tăng địch nhằm đạt điểm cao nhất có thể
  
