@@ -336,7 +336,7 @@ Hàm kiểm tra xem một tọa độ `(x, y)` có chạm phải tường trong 
 3. **`cham_tuong`:**
    - Cung cấp một cách kiểm tra nhanh để xác định xem đối tượng có thể di chuyển vào một vị trí cụ thể hay không.
 
-Những hàm này là nền tảng cho cơ chế chiến đấu và tương tác trong **Tank Of Battle**, mang lại sự phức tạp và tính chiến thuật cao cho trò chơi 🚀🎮✨
+Những hàm này là nền tảng cho cơ chế chiến đấu và tương tác trong **Battle Of Tank**, mang lại sự phức tạp và tính chiến thuật cao cho trò chơi 🚀🎮✨
 
 
 ## Điều khiển
@@ -637,7 +637,7 @@ Hàm `run_game` chịu trách nhiệm điều khiển toàn bộ logic của mà
 
 ## Simple AI - Xây dựng AI đơn giản cho game
 
-[Hàm `Auto_ACT` là trung tâm của hệ thống trí tuệ nhân tạo (AI) trong trò chơi **Tank Of Battle**, chịu trách nhiệm điều khiển hành vi của địch, bao gồm di chuyển và bắn đạn. Hàm này mô phỏng một AI đơn giản nhưng hiệu quả, dựa trên khoảng cách đến người chơi, logic bám đuổi, và ngẫu nhiên hóa hành vi.](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L202-L338)
+[Hàm `Auto_ACT` là trung tâm của hệ thống trí tuệ nhân tạo (AI) trong trò chơi **Battle Of TankTank**, chịu trách nhiệm điều khiển hành vi của địch, bao gồm di chuyển và bắn đạn. Hàm này mô phỏng một AI đơn giản nhưng hiệu quả, dựa trên khoảng cách đến người chơi, logic bám đuổi, và ngẫu nhiên hóa hành vi.](https://github.com/dinhkien0701/battle-of-tank/blob/main/source_code/ui/act.cpp#L202-L338)
 
 ---
 
